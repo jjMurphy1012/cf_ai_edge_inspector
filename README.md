@@ -1,12 +1,28 @@
 # cf_ai_edge_inspector
 
-Cloudflare-native AI website audit agent. A user submits a public URL in chat, the agent starts a durable audit workflow, streams progress through Agent state sync, stores the completed result in Durable Object SQLite, and answers follow-up questions from the saved audit history.
+[![Live Demo](https://img.shields.io/badge/live-demo-F38020?logo=cloudflare&logoColor=white)](https://cf-ai-edge-inspector.zheng-jiaju.workers.dev)
+[![Shared Demo Room](https://img.shields.io/badge/shared-demo_room-0F172A?logo=windowsterminal&logoColor=white)](https://cf-ai-edge-inspector.zheng-jiaju.workers.dev/?room=readme-demo-2)
 
-Live demo: https://cf-ai-edge-inspector.zheng-jiaju.workers.dev
+`cf_ai_edge_inspector` is a Cloudflare-native AI website audit app. A user submits a public URL, the app inspects the homepage response for redirect behavior, HTTPS posture, security headers, cache headers, and basic metadata, then uses `Workers AI` to summarize findings and recommend fixes.
+
+In one sentence: this project is a chat-based website audit agent that runs on `Workers`, coordinates work with `Workflows`, stores results in `Durable Object` SQLite, and lets the user ask follow-up questions about saved audit history.
+
+## End-to-End Flow
+
+1. The user enters a URL such as `Analyze https://example.com`.
+2. `AuditAgent` classifies the message as a new audit request and starts `WebsiteAuditWorkflow`.
+3. The workflow updates Agent state as it moves through `validating -> fetching -> inspecting -> summarizing -> persisting`.
+4. The frontend subscribes to Agent state and renders progress in real time without polling.
+5. The workflow builds structured findings, asks `Workers AI` for a short summary and prioritized recommendations, then calls `step.reportComplete(result)`.
+6. `AuditAgent.onWorkflowComplete()` persists the final result into SQLite and updates chat-visible history.
+7. The user asks follow-up questions such as `What should I fix first?` and the agent answers from the saved audit result.
+8. The `Clear` action resets the current session by clearing chat messages, persisted audit history, and synced Agent state.
 
 ## Screenshot
 
 ![cf_ai_edge_inspector live app](./docs/live-home.png)
+
+Live demo: https://cf-ai-edge-inspector.zheng-jiaju.workers.dev
 
 Shared demo room with a saved audit result:
 `https://cf-ai-edge-inspector.zheng-jiaju.workers.dev/?room=readme-demo-2`
@@ -60,17 +76,6 @@ MVP scope is intentionally narrow and deterministic:
 - homepage `meta description`
 
 This is not a vulnerability scanner or crawler. It inspects one public URL and reports edge, delivery, and header posture.
-
-## End-to-End Flow
-
-1. The user enters a URL such as `Analyze https://example.com`.
-2. `AuditAgent` classifies the message as a new audit request and starts `WebsiteAuditWorkflow`.
-3. The workflow updates Agent state as it moves through `validating -> fetching -> inspecting -> summarizing -> persisting`.
-4. The frontend subscribes to Agent state and renders progress in real time without polling.
-5. The workflow builds structured findings, asks `Workers AI` for a short summary and prioritized recommendations, then calls `step.reportComplete(result)`.
-6. `AuditAgent.onWorkflowComplete()` persists the final result into SQLite and updates chat-visible history.
-7. The user asks follow-up questions such as `What should I fix first?` and the agent answers from the saved audit result.
-8. The `Clear` action resets the current session by clearing chat messages, persisted audit history, and synced Agent state.
 
 ## Core Files
 
