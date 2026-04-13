@@ -89,109 +89,112 @@ async function waitForWorkflowCompletion(client) {
     return client.state;
   }
 
-  return withTimeout(
-    new Promise((resolve, reject) => {
-      const onMessage = (event) => {
-        if (typeof event.data !== "string") return;
+  let onMessage;
+  try {
+    return await withTimeout(
+      new Promise((resolve, reject) => {
+        onMessage = (event) => {
+          if (typeof event.data !== "string") return;
 
-        let payload;
-        try {
-          payload = JSON.parse(event.data);
-        } catch {
-          return;
-        }
+          let payload;
+          try {
+            payload = JSON.parse(event.data);
+          } catch {
+            return;
+          }
 
-        if (payload.type !== STATE_UPDATE) return;
+          if (payload.type !== STATE_UPDATE) return;
 
-        if (payload.state?.runState === "complete") {
-          client.removeEventListener("message", onMessage);
-          resolve(payload.state);
-          return;
-        }
+          if (payload.state?.runState === "complete") {
+            resolve(payload.state);
+            return;
+          }
 
-        if (payload.state?.runState === "error") {
-          client.removeEventListener("message", onMessage);
-          reject(
-            new Error(
-              `Workflow moved into error state: ${payload.state?.lastError ?? "unknown error"}`
-            )
-          );
-        }
-      };
+          if (payload.state?.runState === "error") {
+            reject(
+              new Error(
+                `Workflow moved into error state: ${payload.state?.lastError ?? "unknown error"}`
+              )
+            );
+          }
+        };
 
-      client.addEventListener("message", onMessage);
-    }),
-    120000,
-    "Workflow completion"
-  );
+        client.addEventListener("message", onMessage);
+      }),
+      120000,
+      "Workflow completion"
+    );
+  } finally {
+    if (onMessage) client.removeEventListener("message", onMessage);
+  }
 }
 
 async function sendChatTurn(client, messages) {
   const requestId = crypto.randomUUID();
 
-  return withTimeout(
-    new Promise((resolve, reject) => {
-      const chunks = [];
+  let onMessage;
+  try {
+    return await withTimeout(
+      new Promise((resolve, reject) => {
+        const chunks = [];
 
-      const onMessage = (event) => {
-        if (typeof event.data !== "string") return;
+        onMessage = (event) => {
+          if (typeof event.data !== "string") return;
 
-        let payload;
-        try {
-          payload = JSON.parse(event.data);
-        } catch {
-          return;
-        }
-
-        if (payload.type !== CHAT_RESPONSE || payload.id !== requestId) {
-          return;
-        }
-
-        if (payload.body?.trim()) {
+          let payload;
           try {
-            chunks.push(JSON.parse(payload.body));
+            payload = JSON.parse(event.data);
           } catch {
-            chunks.push(payload.body);
+            return;
           }
-        }
 
-        if (payload.error) {
-          client.removeEventListener("message", onMessage);
-          reject(new Error(payload.body || "Chat stream returned an error"));
-          return;
-        }
-
-        if (payload.done) {
-          client.removeEventListener("message", onMessage);
-          resolve({ requestId, chunks });
-        }
-      };
-
-      client.addEventListener("message", onMessage);
-      client.send(
-        JSON.stringify({
-          type: "cf_agent_use_chat_request",
-          id: requestId,
-          init: {
-            method: "POST",
-            body: JSON.stringify({
-              trigger: "submit-message",
-              messages
-            })
+          if (payload.type !== CHAT_RESPONSE || payload.id !== requestId) {
+            return;
           }
-        })
-      );
-    }),
-    45000,
-    "Chat turn"
-  );
+
+          if (payload.body?.trim()) {
+            try {
+              chunks.push(JSON.parse(payload.body));
+            } catch {
+              chunks.push(payload.body);
+            }
+          }
+
+          if (payload.error) {
+            reject(new Error(payload.body || "Chat stream returned an error"));
+            return;
+          }
+
+          if (payload.done) {
+            resolve({ requestId, chunks });
+          }
+        };
+
+        client.addEventListener("message", onMessage);
+        client.send(
+          JSON.stringify({
+            type: "cf_agent_use_chat_request",
+            id: requestId,
+            init: {
+              method: "POST",
+              body: JSON.stringify({
+                trigger: "submit-message",
+                messages
+              })
+            }
+          })
+        );
+      }),
+      45000,
+      "Chat turn"
+    );
+  } finally {
+    if (onMessage) client.removeEventListener("message", onMessage);
+  }
 }
 
-async function main() {
-  const stateTransitions = [];
-  let firstTurn = null;
-  let firstTranscript = [];
-  const connectionDebug = {
+function newConnectionDebug() {
+  return {
     opened: false,
     closed: false,
     errors: 0,
@@ -199,6 +202,13 @@ async function main() {
     closeReason: null,
     wasClean: null
   };
+}
+
+async function main() {
+  const stateTransitions = [];
+  let firstTurn = null;
+  let firstTranscript = [];
+  const connectionDebug = newConnectionDebug();
   const client = createClient(
     ROOM,
     (state) => {
@@ -260,14 +270,7 @@ async function main() {
     await sleep(250);
 
     const reconnectStateTransitions = [];
-    const reconnectDebug = {
-      opened: false,
-      closed: false,
-      errors: 0,
-      closeCode: null,
-      closeReason: null,
-      wasClean: null
-    };
+    const reconnectDebug = newConnectionDebug();
     const reconnected = createClient(
       ROOM,
       (state) => {

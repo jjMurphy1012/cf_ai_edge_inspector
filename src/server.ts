@@ -1,15 +1,7 @@
 import { createWorkersAI } from "workers-ai-provider";
 import { callable, routeAgentRequest } from "agents";
 import { AIChatAgent, type OnChatMessageOptions } from "@cloudflare/ai-chat";
-import {
-  convertToModelMessages,
-  pruneMessages,
-  stepCountIs,
-  streamText,
-  tool,
-  type ModelMessage
-} from "ai";
-import { z } from "zod";
+import { streamText } from "ai";
 import type {
   AuditResult,
   AgentState,
@@ -54,26 +46,117 @@ type AuditHistorySummary = {
   completedAt: string;
 };
 
-/**
- * The AI SDK's downloadAssets step runs `new URL(data)` on every file
- * part's string data. Data URIs parse as valid URLs, so it tries to
- * HTTP-fetch them and fails. Decode to Uint8Array so the SDK treats
- * them as inline data instead.
- */
-function inlineDataUrls(messages: ModelMessage[]): ModelMessage[] {
-  return messages.map((msg) => {
-    if (msg.role !== "user" || typeof msg.content === "string") return msg;
-    return {
-      ...msg,
-      content: msg.content.map((part) => {
-        if (part.type !== "file" || typeof part.data !== "string") return part;
-        const match = part.data.match(/^data:([^;]+);base64,(.+)$/);
-        if (!match) return part;
-        const bytes = Uint8Array.from(atob(match[2]), (c) => c.charCodeAt(0));
-        return { ...part, data: bytes, mediaType: match[1] };
-      })
-    };
-  });
+type AuditIntent =
+  | { kind: "start_audit"; url: string }
+  | { kind: "compare" }
+  | { kind: "history" }
+  | { kind: "latest" }
+  | { kind: "follow_up" }
+  | { kind: "empty" };
+
+function extractTextFromParts(
+  parts: Array<{ type: string; text?: string }> | undefined
+) {
+  if (!parts) {
+    return "";
+  }
+
+  return parts
+    .filter((part) => part.type === "text" && typeof part.text === "string")
+    .map((part) => part.text?.trim() ?? "")
+    .filter(Boolean)
+    .join("\n")
+    .trim();
+}
+
+function getLatestUserText(
+  messages: Array<{
+    role: string;
+    parts?: Array<{ type: string; text?: string }>;
+  }>
+) {
+  const latestUser = [...messages]
+    .reverse()
+    .find((message) => message.role === "user");
+  return latestUser ? extractTextFromParts(latestUser.parts) : "";
+}
+
+function extractAuditCandidate(text: string) {
+  const trimmed = text.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const explicitUrl = trimmed.match(/https?:\/\/[^\s)]+/i);
+  if (explicitUrl) {
+    return explicitUrl[0];
+  }
+
+  const domainLike = trimmed.match(
+    /\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}(?:\/[^\s)]*)?\b/i
+  );
+  return domainLike?.[0] ?? null;
+}
+
+function classifyIntent(text: string): AuditIntent {
+  const normalized = text.trim().toLowerCase();
+  if (!normalized) {
+    return { kind: "empty" };
+  }
+
+  const candidateUrl = extractAuditCandidate(text);
+  if (candidateUrl) {
+    return { kind: "start_audit", url: candidateUrl };
+  }
+
+  if (
+    /(compare|what changed|changed|difference|previous scan|last scan)/i.test(
+      text
+    )
+  ) {
+    return { kind: "compare" };
+  }
+
+  if (
+    /(history|recent audits|recent scans|past audits|past scans|list audits)/i.test(
+      text
+    )
+  ) {
+    return { kind: "history" };
+  }
+
+  if (
+    /(latest audit|last audit|latest result|last result|show latest|show last|summary)/i.test(
+      text
+    )
+  ) {
+    return { kind: "latest" };
+  }
+
+  return { kind: "follow_up" };
+}
+
+function compactAuditResult(audit: AuditResult | null) {
+  if (!audit) {
+    return null;
+  }
+
+  return {
+    runId: audit.runId,
+    url: audit.url,
+    normalizedUrl: audit.normalizedUrl,
+    status: audit.status,
+    summary: audit.summary,
+    recommendations: audit.recommendations,
+    findings: audit.findings.map((finding) => ({
+      severity: finding.severity,
+      title: finding.title,
+      details: finding.details,
+      recommendation: finding.recommendation
+    })),
+    metadata: audit.metadata,
+    completedAt: audit.completedAt
+  };
 }
 
 export class AuditAgent extends AIChatAgent<Env, AgentState> {
@@ -248,109 +331,127 @@ export class AuditAgent extends AIChatAgent<Env, AgentState> {
     `;
   }
 
-  async onChatMessage(_onFinish: unknown, options?: OnChatMessageOptions) {
-    const mcpTools = this.mcp.getAITools();
+  private streamReply(prompt: string, options?: OnChatMessageOptions) {
     const workersai = createWorkersAI({ binding: this.env.AI });
-    const latestAudit = this.getLatestAudit();
-    const history = this.getRecentHistory();
 
-    const result = streamText({
+    return streamText({
       model: workersai(SUMMARY_MODEL, {
         sessionAffinity: this.sessionAffinity
       }),
       system: `You are cf_ai_edge_inspector, a concise website audit agent built on Cloudflare.
 
-Your primary job is to analyze a public URL, trigger a durable website audit workflow, and explain the results.
-
-Rules:
-- When the user wants a site checked, audited, analyzed, or inspected, call startWebsiteAudit.
-- When the user asks follow-up questions about the most recent audit, call getLatestAudit before answering.
-- When the user asks for scan history, call listRecentAudits.
-- When the user asks what changed between the latest two runs, call compareRecentAudits.
-- Keep answers short, technical, and concrete.
-- Do not claim to have checked a URL unless a workflow result exists.
-
-Current agent state:
-${JSON.stringify({
-  runState: this.state.runState,
-  phase: this.state.phase,
-  progress: this.state.progress,
-  currentUrl: this.state.currentUrl,
-  latestSummary: this.state.latestSummary,
-  historyCount: history.length
-})}`,
-      messages: pruneMessages({
-        messages: inlineDataUrls(await convertToModelMessages(this.messages)),
-        toolCalls: "before-last-2-messages"
-      }),
-      tools: {
-        ...mcpTools,
-        startWebsiteAudit: tool({
-          description:
-            "Start a website audit for a public URL. Use this whenever the user wants a site analyzed.",
-          inputSchema: z.object({
-            url: z
-              .string()
-              .min(1)
-              .describe("A public URL or bare domain to audit")
-          }),
-          execute: async ({ url }) => {
-            const workflowId = await this.runWorkflow<StartAuditParams>(
-              "WEBSITE_AUDIT_WORKFLOW",
-              {
-                url,
-                requestedAt: new Date().toISOString()
-              }
-            );
-
-            this.setState({
-              ...this.state,
-              runState: "running",
-              phase: "validating",
-              progress: 5,
-              currentUrl: url,
-              activeRunId: workflowId,
-              lastError: null
-            });
-
-            return {
-              workflowId,
-              message: `Started a website audit for ${url}.`,
-              state: this.state
-            };
-          }
-        }),
-        getLatestAudit: tool({
-          description:
-            "Get the most recent audit result, including findings and recommendations.",
-          inputSchema: z.object({}),
-          execute: async () => {
-            return latestAudit ?? "No website audit has completed yet.";
-          }
-        }),
-        listRecentAudits: tool({
-          description: "List recent audit summaries for this chat session.",
-          inputSchema: z.object({}),
-          execute: async () => {
-            return history.length > 0
-              ? history
-              : "No audit history is available yet.";
-          }
-        }),
-        compareRecentAudits: tool({
-          description:
-            "Compare the two most recent completed audits and report whether the status or summary changed.",
-          inputSchema: z.object({}),
-          execute: async () => {
-            return this.compareRecentAudits();
-          }
-        })
-      },
-      stopWhen: stepCountIs(5),
+Answer with short, technical, direct prose.
+- Use only the context provided in the prompt.
+- Do not invent scan results.
+- If no result exists yet, say so plainly.
+- Prefer 2-4 sentences.`,
+      prompt,
       abortSignal: options?.abortSignal
-    });
+    }).toUIMessageStreamResponse();
+  }
 
-    return result.toUIMessageStreamResponse();
+  async onChatMessage(_onFinish: unknown, options?: OnChatMessageOptions) {
+    const latestAudit = this.getLatestAudit();
+    const history = this.getRecentHistory();
+    const latestUserText = getLatestUserText(this.messages);
+    const intent = classifyIntent(latestUserText);
+
+    if (intent.kind === "empty") {
+      return this.streamReply(
+        "The user sent an empty message. Ask them to submit a public URL like https://example.com.",
+        options
+      );
+    }
+
+    if (intent.kind === "start_audit") {
+      if (this.state.runState === "running" && this.state.currentUrl) {
+        return this.streamReply(
+          `An audit is already running for ${this.state.currentUrl}. Tell the user to wait for completion before starting another one.`,
+          options
+        );
+      }
+
+      const workflowId = await this.runWorkflow<StartAuditParams>(
+        "WEBSITE_AUDIT_WORKFLOW",
+        {
+          url: intent.url,
+          requestedAt: new Date().toISOString()
+        }
+      );
+
+      this.setState({
+        ...this.state,
+        runState: "running",
+        phase: "validating",
+        progress: 5,
+        currentUrl: intent.url,
+        activeRunId: workflowId,
+        lastError: null
+      });
+
+      return this.streamReply(
+        `A website audit has started for ${intent.url}. Tell the user the progress panel will update live and that they can ask follow-up questions after the run completes.`,
+        options
+      );
+    }
+
+    if (!latestAudit) {
+      if (this.state.runState === "running" && this.state.currentUrl) {
+        return this.streamReply(
+          `An audit is currently running for ${this.state.currentUrl}, but no completed result exists yet. Tell the user to wait for the summary and progress updates.`,
+          options
+        );
+      }
+
+      return this.streamReply(
+        "No completed audit exists for this chat yet. Ask the user to submit a public website URL to inspect.",
+        options
+      );
+    }
+
+    if (intent.kind === "compare") {
+      return this.streamReply(
+        `Explain this comparison between the latest two completed audits.
+
+Comparison data:
+${JSON.stringify(this.compareRecentAudits(), null, 2)}`,
+        options
+      );
+    }
+
+    if (intent.kind === "history") {
+      return this.streamReply(
+        `Summarize the recent audit history for the user in a compact bullet-free format.
+
+History:
+${JSON.stringify(history, null, 2)}`,
+        options
+      );
+    }
+
+    if (intent.kind === "latest") {
+      return this.streamReply(
+        `Summarize the most recent completed audit for the user.
+
+Latest audit:
+${JSON.stringify(compactAuditResult(latestAudit), null, 2)}`,
+        options
+      );
+    }
+
+    return this.streamReply(
+      `Answer the user's follow-up question using only the latest completed audit and recent history.
+
+User question:
+${latestUserText}
+
+Latest audit:
+${JSON.stringify(compactAuditResult(latestAudit), null, 2)}
+
+Recent history:
+${JSON.stringify(history, null, 2)}`,
+      options
+    );
   }
 
   async onWorkflowComplete(

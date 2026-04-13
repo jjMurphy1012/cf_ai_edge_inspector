@@ -52,6 +52,115 @@ const summarySchema = z.object({
   recommendations: z.array(z.string().min(1)).min(1).max(3)
 });
 
+type MissingHeaderRule = {
+  headerKey: keyof HeaderSnapshot;
+  id: string;
+  severity: Finding["severity"];
+  title: string;
+  details: string;
+  recommendation: string;
+  bumpsToPartial: boolean;
+};
+
+const MISSING_HEADER_RULES: readonly MissingHeaderRule[] = [
+  {
+    headerKey: "hsts",
+    id: "missing-hsts",
+    severity: "medium",
+    title: "Missing Strict-Transport-Security header",
+    details:
+      "Without HSTS, browsers may continue to use insecure transport for future visits.",
+    recommendation:
+      "Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced.",
+    bumpsToPartial: true
+  },
+  {
+    headerKey: "csp",
+    id: "missing-csp",
+    severity: "medium",
+    title: "Missing Content-Security-Policy header",
+    details:
+      "A missing CSP reduces protection against script injection and unsafe third-party content.",
+    recommendation:
+      "Define a baseline Content-Security-Policy that limits script, frame, and object sources.",
+    bumpsToPartial: true
+  },
+  {
+    headerKey: "xFrameOptions",
+    id: "missing-x-frame-options",
+    severity: "low",
+    title: "Missing X-Frame-Options header",
+    details:
+      "This makes it easier for other sites to embed the page in an iframe.",
+    recommendation:
+      "Add X-Frame-Options or an equivalent frame-ancestors CSP directive.",
+    bumpsToPartial: false
+  },
+  {
+    headerKey: "xContentTypeOptions",
+    id: "missing-x-content-type-options",
+    severity: "low",
+    title: "Missing X-Content-Type-Options header",
+    details:
+      "Browsers may try to MIME-sniff content when this header is absent.",
+    recommendation:
+      "Return X-Content-Type-Options: nosniff for public responses.",
+    bumpsToPartial: false
+  },
+  {
+    headerKey: "referrerPolicy",
+    id: "missing-referrer-policy",
+    severity: "low",
+    title: "Missing Referrer-Policy header",
+    details:
+      "The browser may leak more referrer information than intended on cross-site navigation.",
+    recommendation:
+      "Set a Referrer-Policy such as strict-origin-when-cross-origin.",
+    bumpsToPartial: false
+  },
+  {
+    headerKey: "cacheControl",
+    id: "missing-cache-control",
+    severity: "medium",
+    title: "Missing Cache-Control header",
+    details: "No cache directive was detected on the homepage response.",
+    recommendation:
+      "Add explicit Cache-Control directives so browsers and edge caches know how to treat the response.",
+    bumpsToPartial: true
+  }
+];
+
+type MissingMetadataRule = {
+  snapshotKey: "title" | "metaDescription";
+  id: string;
+  severity: Finding["severity"];
+  title: string;
+  details: string;
+  recommendation: string;
+};
+
+const MISSING_METADATA_RULES: readonly MissingMetadataRule[] = [
+  {
+    snapshotKey: "title",
+    id: "missing-title",
+    severity: "low",
+    title: "Missing HTML title",
+    details:
+      "The page did not expose a title element in the fetched homepage HTML.",
+    recommendation:
+      "Add a descriptive title tag so the page is identifiable in browsers and search results."
+  },
+  {
+    snapshotKey: "metaDescription",
+    id: "missing-meta-description",
+    severity: "info",
+    title: "Missing meta description",
+    details: "No meta description was found in the fetched homepage HTML.",
+    recommendation:
+      "Add a concise meta description to improve how the page is summarized externally."
+  }
+];
+
 export class WebsiteAuditWorkflow extends AgentWorkflow<
   AuditAgent,
   StartAuditParams,
@@ -91,6 +200,7 @@ export class WebsiteAuditWorkflow extends AgentWorkflow<
         progress: 100,
         latestSummary: invalidResult.summary
       });
+      await step.reportComplete(invalidResult);
       return invalidResult;
     }
 
@@ -147,6 +257,7 @@ export class WebsiteAuditWorkflow extends AgentWorkflow<
       progress: 95,
       latestSummary: result.summary
     });
+    await step.reportComplete(result);
 
     return result;
   }
@@ -286,8 +397,11 @@ function buildAuditDraft(
     ? new URL(snapshot.finalUrl).protocol
     : new URL(normalizedUrl).protocol;
 
+  const bumpToPartial = (s: ScanStatus): ScanStatus =>
+    s === "success" ? "partial" : s;
+
   if (finalProtocol !== "https:") {
-    status = status === "success" ? "partial" : status;
+    status = bumpToPartial(status);
     findings.push({
       id: "https-not-enforced",
       severity: "high",
@@ -310,100 +424,26 @@ function buildAuditDraft(
     });
   }
 
-  if (!snapshot.headers.hsts) {
-    status = status === "success" ? "partial" : status;
+  for (const rule of MISSING_HEADER_RULES) {
+    if (snapshot.headers[rule.headerKey]) continue;
+    if (rule.bumpsToPartial) status = bumpToPartial(status);
     findings.push({
-      id: "missing-hsts",
-      severity: "medium",
-      title: "Missing Strict-Transport-Security header",
-      details:
-        "Without HSTS, browsers may continue to use insecure transport for future visits.",
-      recommendation:
-        "Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced."
+      id: rule.id,
+      severity: rule.severity,
+      title: rule.title,
+      details: rule.details,
+      recommendation: rule.recommendation
     });
   }
 
-  if (!snapshot.headers.csp) {
-    status = status === "success" ? "partial" : status;
+  for (const rule of MISSING_METADATA_RULES) {
+    if (snapshot[rule.snapshotKey]) continue;
     findings.push({
-      id: "missing-csp",
-      severity: "medium",
-      title: "Missing Content-Security-Policy header",
-      details:
-        "A missing CSP reduces protection against script injection and unsafe third-party content.",
-      recommendation:
-        "Define a baseline Content-Security-Policy that limits script, frame, and object sources."
-    });
-  }
-
-  if (!snapshot.headers.xFrameOptions) {
-    findings.push({
-      id: "missing-x-frame-options",
-      severity: "low",
-      title: "Missing X-Frame-Options header",
-      details:
-        "This makes it easier for other sites to embed the page in an iframe.",
-      recommendation:
-        "Add X-Frame-Options or an equivalent frame-ancestors CSP directive."
-    });
-  }
-
-  if (!snapshot.headers.xContentTypeOptions) {
-    findings.push({
-      id: "missing-x-content-type-options",
-      severity: "low",
-      title: "Missing X-Content-Type-Options header",
-      details:
-        "Browsers may try to MIME-sniff content when this header is absent.",
-      recommendation:
-        "Return X-Content-Type-Options: nosniff for public responses."
-    });
-  }
-
-  if (!snapshot.headers.referrerPolicy) {
-    findings.push({
-      id: "missing-referrer-policy",
-      severity: "low",
-      title: "Missing Referrer-Policy header",
-      details:
-        "The browser may leak more referrer information than intended on cross-site navigation.",
-      recommendation:
-        "Set a Referrer-Policy such as strict-origin-when-cross-origin."
-    });
-  }
-
-  if (!snapshot.headers.cacheControl) {
-    status = status === "success" ? "partial" : status;
-    findings.push({
-      id: "missing-cache-control",
-      severity: "medium",
-      title: "Missing Cache-Control header",
-      details: "No cache directive was detected on the homepage response.",
-      recommendation:
-        "Add explicit Cache-Control directives so browsers and edge caches know how to treat the response."
-    });
-  }
-
-  if (!snapshot.title) {
-    findings.push({
-      id: "missing-title",
-      severity: "low",
-      title: "Missing HTML title",
-      details:
-        "The page did not expose a title element in the fetched homepage HTML.",
-      recommendation:
-        "Add a descriptive title tag so the page is identifiable in browsers and search results."
-    });
-  }
-
-  if (!snapshot.metaDescription) {
-    findings.push({
-      id: "missing-meta-description",
-      severity: "info",
-      title: "Missing meta description",
-      details: "No meta description was found in the fetched homepage HTML.",
-      recommendation:
-        "Add a concise meta description to improve how the page is summarized externally."
+      id: rule.id,
+      severity: rule.severity,
+      title: rule.title,
+      details: rule.details,
+      recommendation: rule.recommendation
     });
   }
 
