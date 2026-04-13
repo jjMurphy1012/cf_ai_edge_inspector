@@ -114,6 +114,32 @@ Claude Opus 4.6 (Claude Code)
 **Prompt**  
 Inspect the current git state, local implementation, and the live deployment. Evaluate whether the project is in a submittable state, identify the highest-impact remaining gaps — including uncommitted implementation work, end-to-end browser verification of the audit flow, real-URL coverage for status taxonomy, and README polish — and produce a prioritized next-step plan.
 
+### Stage 5 — Hardening and cleanup
+
+#### 2026-04-13 — Parallel code review and targeted cleanup
+
+**Model**  
+Claude Opus 4.6 (Claude Code)
+
+**Prompt**  
+Review the recently changed implementation files along three dimensions in parallel: reuse of existing utilities and SDK helpers, code quality (redundant state, copy-paste, leaky abstractions, stringly-typed code, narrating comments), and efficiency (hot-path bloat, missed concurrency, no-op state broadcasts, listener leaks). Aggregate findings, fix only the high-impact low-risk items, and defer broader refactors that are not safe to land pre-submission. Preserve architectural boundaries and keep the deployed behavior intact.
+
+#### 2026-04-13 — Audit routing stabilization and live validation
+
+**Model**  
+GPT-5.4 Codex
+
+**Prompt**  
+Stabilize the audit entry path so a user message like `Analyze <url>` deterministically starts the workflow without depending on model tool calling. Move intent recognition and URL extraction into the Agent, ensure the workflow explicitly reports completion so results reach SQLite, and extend the live validation script to cover success, redirect, and `invalid_url` paths against the deployed Worker. Update the README to describe the validated flows.
+
+#### 2026-04-13 — Second simplify pass and prompt-log reconciliation
+
+**Model**  
+Claude Opus 4.6 (Claude Code)
+
+**Prompt**  
+Run a second simplify review over the incremental changes since the last pass. Apply only the small, clearly-correct fixes — hoist frequently-used regexes out of hot paths, keep readable branching over forced deduplication. Then reconcile the prompt log so every development-time stage is represented and the log matches the actual commit history in shape and order.
+
 ## Suggested future entries
 
 Add entries as development continues for:

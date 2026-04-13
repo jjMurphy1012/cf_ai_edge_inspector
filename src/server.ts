@@ -98,6 +98,10 @@ function extractAuditCandidate(text: string) {
   return domainLike?.[0] ?? null;
 }
 
+const AUDIT_COMMAND_PATTERN =
+  /\b(?:analyze|audit|inspect|check|review)\b\s+(.+)/i;
+const COMMAND_TARGET_TRIM_PATTERN = /^[("'`\s]+|[)"'`,.!?\s]+$/g;
+
 function classifyIntent(text: string): AuditIntent {
   const normalized = text.trim().toLowerCase();
   if (!normalized) {
@@ -109,13 +113,11 @@ function classifyIntent(text: string): AuditIntent {
     return { kind: "start_audit", url: candidateUrl };
   }
 
-  const commandTarget = text.match(
-    /\b(?:analyze|audit|inspect|check|review)\b\s+(.+)/i
-  )?.[1];
+  const commandTarget = text.match(AUDIT_COMMAND_PATTERN)?.[1];
   if (commandTarget) {
     return {
       kind: "start_audit",
-      url: commandTarget.trim().replace(/^[("'`\s]+|[)"'`,.!?\s]+$/g, "")
+      url: commandTarget.trim().replace(COMMAND_TARGET_TRIM_PATTERN, "")
     };
   }
 
