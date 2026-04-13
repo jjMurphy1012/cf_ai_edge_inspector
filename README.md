@@ -8,12 +8,12 @@ This project is designed for Cloudflare's AI app assignment and intentionally us
 
 ## Assignment coverage
 
-| Requirement | How this project satisfies it |
-| --- | --- |
-| LLM | Cloudflare Workers AI |
-| Workflow / coordination | Cloudflare Workflows plus Agents/Durable Objects |
-| User input via chat or voice | Chat UI |
-| Memory or state | Durable Objects state and persisted scan history |
+| Requirement                  | How this project satisfies it                    |
+| ---------------------------- | ------------------------------------------------ |
+| LLM                          | Cloudflare Workers AI                            |
+| Workflow / coordination      | Cloudflare Workflows plus Agents/Durable Objects |
+| User input via chat or voice | Chat UI                                          |
+| Memory or state              | Durable Objects state and persisted scan history |
 
 ## Planned architecture
 
@@ -31,30 +31,68 @@ This project is designed for Cloudflare's AI app assignment and intentionally us
 4. Workers AI turns those findings into a concise summary and remediation plan.
 5. The app stores the result and lets the user continue the conversation with follow-up questions.
 
+## Current implementation status
+
+The generic starter has been converted into the first project-specific skeleton:
+
+- `AuditAgent` replaces the default demo `ChatAgent`
+- `WebsiteAuditWorkflow` is registered in `wrangler.jsonc`
+- audit types and scan status enums live in `src/types.ts`
+- the workflow performs a lightweight homepage fetch, header inspection, metadata extraction, and AI summary generation
+- the frontend now exposes synced Agent state for audit progress
+- completed audit results are persisted in the Agent's SQLite-backed SQL store
+
 ## AI-assisted development
 
 AI-assisted coding was used during planning and implementation. The primary tools used for this project are:
 
 - `Claude Opus 4.6` via Claude Code
-- `GPT-5.4`via Codex
+- `GPT-5.4` via Codex
 
 Detailed prompts, usage notes, and outcomes will be documented in [PROMPTS.md](./PROMPTS.md).
 
 ## Local development
 
-This section will be updated with exact setup steps after the project scaffold is created.
-
-Expected flow:
+Prerequisites:
 
 1. Install dependencies.
 2. Authenticate with Cloudflare using Wrangler.
-3. Run the app locally.
-4. Test the chat-driven website audit flow.
+
+Commands:
+
+```bash
+npm install
+npx wrangler login
+npm run types
+npm run dev
+```
+
+Notes:
+
+- Local dev currently requires `wrangler login` because the `Workers AI` binding uses `"remote": true`.
+- If `wrangler.jsonc` changes, rerun `npm run types` to refresh `env.d.ts`.
 
 ## Deployment
 
-This section will be updated with the deployed Cloudflare link and exact deployment commands after implementation is complete.
+Live deployment:
+
+- `https://cf-ai-edge-inspector.zheng-jiaju.workers.dev`
+
+Expected deploy flow:
+
+```bash
+npm run deploy
+```
+
+Deployment status:
+
+- deployed successfully to Cloudflare Workers
+- `workers.dev` root returns `HTTP 200`
+- bound resources confirmed during deploy:
+  - `AuditAgent` Durable Object
+  - `WebsiteAuditWorkflow`
+  - `Workers AI`
 
 ## Status
 
-Planning and architecture setup in progress.
+Project-specific scaffold is live. The next milestones are deeper audit coverage, more refined follow-up reasoning, and final README polish for submission.

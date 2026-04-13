@@ -3,7 +3,8 @@ import { useAgent } from "agents/react";
 import { useAgentChat } from "@cloudflare/ai-chat/react";
 import { getToolName, isToolUIPart, type UIMessage } from "ai";
 import type { MCPServersState } from "agents";
-import type { ChatAgent } from "./server";
+import type { AuditAgent } from "./server";
+import type { AgentState, AuditResult } from "./types";
 import {
   Badge,
   Button,
@@ -240,10 +241,11 @@ function Chat() {
   const [mcpName, setMcpName] = useState("");
   const [mcpUrl, setMcpUrl] = useState("");
   const [isAddingServer, setIsAddingServer] = useState(false);
+  const [latestAudit, setLatestAudit] = useState<AuditResult | null>(null);
   const mcpPanelRef = useRef<HTMLDivElement>(null);
 
-  const agent = useAgent<ChatAgent>({
-    agent: "ChatAgent",
+  const agent = useAgent<AuditAgent>({
+    agent: "AuditAgent",
     onOpen: useCallback(() => setConnected(true), []),
     onClose: useCallback(() => setConnected(false), []),
     onError: useCallback(
@@ -338,6 +340,30 @@ function Chat() {
   });
 
   const isStreaming = status === "streaming" || status === "submitted";
+  const auditState = agent.state as AgentState | undefined;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadLatestAudit() {
+      try {
+        const result = await agent.stub.getLatestAuditResult();
+        if (!cancelled) {
+          setLatestAudit(result ?? null);
+        }
+      } catch (error) {
+        console.error("Failed to load latest audit:", error);
+      }
+    }
+
+    if (agent.identified) {
+      void loadLatestAudit();
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [agent, agent.identified, auditState?.lastCompletedRunId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -449,11 +475,11 @@ function Chat() {
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h1 className="text-lg font-semibold text-kumo-default">
-              <span className="mr-2">⛅</span>Agent Starter
+              <span className="mr-2">🔎</span>cf_ai_edge_inspector
             </h1>
             <Badge variant="secondary">
               <ChatCircleDotsIcon size={12} weight="bold" className="mr-1" />
-              AI Chat
+              Website Audit
             </Badge>
           </div>
           <div className="flex items-center gap-3">
@@ -653,6 +679,175 @@ function Chat() {
         </div>
       </header>
 
+      {auditState && (
+        <div className="px-5 py-3 bg-kumo-base border-b border-kumo-line">
+          <div className="max-w-3xl mx-auto space-y-3">
+            <Surface className="rounded-xl ring ring-kumo-line px-4 py-3">
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <Text size="xs" variant="secondary" bold>
+                    Audit status
+                  </Text>
+                  <Text size="sm" bold>
+                    {auditState.runState} / {auditState.phase}
+                  </Text>
+                  {auditState.currentUrl && (
+                    <div className="font-mono break-all">
+                      <Text size="xs" variant="secondary">
+                        {auditState.currentUrl}
+                      </Text>
+                    </div>
+                  )}
+                  {auditState.latestSummary && (
+                    <div className="mt-1">
+                      <Text size="xs" variant="secondary">
+                        {auditState.latestSummary}
+                      </Text>
+                    </div>
+                  )}
+                  {auditState.lastError && (
+                    <div className="mt-1 text-red-500">
+                      <Text size="xs">{auditState.lastError}</Text>
+                    </div>
+                  )}
+                </div>
+                <Badge variant="secondary">{auditState.progress}%</Badge>
+              </div>
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-kumo-line">
+                <div
+                  className="h-full rounded-full bg-kumo-brand transition-all"
+                  style={{ width: `${auditState.progress}%` }}
+                />
+              </div>
+              {auditState.history.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <Text size="xs" variant="secondary" bold>
+                    Recent audits
+                  </Text>
+                  {auditState.history.map((entry) => (
+                    <Surface
+                      key={entry.runId}
+                      className="rounded-lg border border-kumo-line px-3 py-2"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="font-mono break-all">
+                            <Text size="xs">{entry.url}</Text>
+                          </div>
+                          <div className="mt-1">
+                            <Text size="xs" variant="secondary">
+                              {entry.summary}
+                            </Text>
+                          </div>
+                        </div>
+                        <Badge variant="secondary">{entry.status}</Badge>
+                      </div>
+                    </Surface>
+                  ))}
+                </div>
+              )}
+            </Surface>
+
+            {latestAudit && (
+              <Surface className="rounded-xl ring ring-kumo-line px-4 py-3 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <Text size="xs" variant="secondary" bold>
+                      Latest result
+                    </Text>
+                    <div className="font-mono break-all">
+                      <Text size="xs">
+                        {latestAudit.normalizedUrl ?? latestAudit.url}
+                      </Text>
+                    </div>
+                    <div className="mt-1">
+                      <Text size="xs" variant="secondary">
+                        {latestAudit.summary}
+                      </Text>
+                    </div>
+                  </div>
+                  <Badge variant="secondary">{latestAudit.status}</Badge>
+                </div>
+
+                <div className="grid gap-2 md:grid-cols-3">
+                  <Surface className="rounded-lg border border-kumo-line px-3 py-2">
+                    <Text size="xs" variant="secondary" bold>
+                      HTTP status
+                    </Text>
+                    <Text size="sm">
+                      {latestAudit.metadata.statusCode ?? "n/a"}
+                    </Text>
+                  </Surface>
+                  <Surface className="rounded-lg border border-kumo-line px-3 py-2">
+                    <Text size="xs" variant="secondary" bold>
+                      Final URL
+                    </Text>
+                    <div className="font-mono break-all">
+                      <Text size="xs">
+                        {latestAudit.metadata.finalUrl ?? "n/a"}
+                      </Text>
+                    </div>
+                  </Surface>
+                  <Surface className="rounded-lg border border-kumo-line px-3 py-2">
+                    <Text size="xs" variant="secondary" bold>
+                      Response time
+                    </Text>
+                    <Text size="sm">
+                      {latestAudit.metadata.responseTimeMs
+                        ? `${latestAudit.metadata.responseTimeMs} ms`
+                        : "n/a"}
+                    </Text>
+                  </Surface>
+                </div>
+
+                <div className="space-y-2">
+                  <Text size="xs" variant="secondary" bold>
+                    Recommendations
+                  </Text>
+                  {latestAudit.recommendations.map((recommendation) => (
+                    <Surface
+                      key={recommendation}
+                      className="rounded-lg border border-kumo-line px-3 py-2"
+                    >
+                      <Text size="xs">{recommendation}</Text>
+                    </Surface>
+                  ))}
+                </div>
+
+                <div className="space-y-2">
+                  <Text size="xs" variant="secondary" bold>
+                    Findings
+                  </Text>
+                  {latestAudit.findings.map((finding) => (
+                    <Surface
+                      key={finding.id}
+                      className="rounded-lg border border-kumo-line px-3 py-2"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <Text size="sm" bold>
+                            {finding.title}
+                          </Text>
+                          <div className="mt-1">
+                            <Text size="xs" variant="secondary">
+                              {finding.details}
+                            </Text>
+                          </div>
+                          <div className="mt-1">
+                            <Text size="xs">{finding.recommendation}</Text>
+                          </div>
+                        </div>
+                        <Badge variant="secondary">{finding.severity}</Badge>
+                      </div>
+                    </Surface>
+                  ))}
+                </div>
+              </Surface>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Messages */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-3xl mx-auto px-5 py-6 space-y-5">
@@ -663,10 +858,10 @@ function Chat() {
               contents={
                 <div className="flex flex-wrap justify-center gap-2">
                   {[
-                    "What's the weather in Paris?",
-                    "What timezone am I in?",
-                    "Calculate 5000 * 3",
-                    "Remind me in 5 minutes to take a break"
+                    "Analyze example.com",
+                    "Audit developers.cloudflare.com",
+                    "What should I fix first?",
+                    "Compare with my previous scan"
                   ].map((prompt) => (
                     <Button
                       key={prompt}
