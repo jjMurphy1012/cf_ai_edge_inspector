@@ -4,6 +4,10 @@ Cloudflare-native AI website audit agent. A user submits a public URL in chat, t
 
 Live demo: https://cf-ai-edge-inspector.zheng-jiaju.workers.dev
 
+## Screenshot
+
+![cf_ai_edge_inspector live app](./docs/live-home.png)
+
 ## Why Cloudflare
 
 This project was built specifically for Cloudflare's AI app assignment and keeps the core runtime on Cloudflare:
@@ -153,4 +157,3 @@ Detailed prompt records belong in [PROMPTS.md](./PROMPTS.md).
 - One `Workers AI` model currently handles both summary generation and follow-up answers.
 - The UI still contains some starter-era panels that are not essential to the assignment.
 - `Clear` is intentionally disabled while an audit is running, because clearing mid-workflow would create inconsistent state once the workflow completes.
-- A README screenshot/GIF is not included yet.
