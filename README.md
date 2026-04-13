@@ -93,6 +93,13 @@ Deployment status:
   - `WebsiteAuditWorkflow`
   - `Workers AI`
 
+## Known limitations
+
+- MVP audit scope is limited to the homepage: reachability, status code, redirect chain, HTTPS, common security headers, cache headers, `title`, and `meta description`. No recursive crawl, no screenshot, no vulnerability scanning.
+- Fetch budget is fixed at 5–10s per target; timeouts and Cloudflare egress blocks are reported as `blocked` / `unreachable` findings rather than system errors.
+- A single Workers AI model (`@cf/meta/llama-3.3-70b-instruct-fp8-fast`) handles both summaries and follow-up reasoning. Splitting to a lighter model for follow-up is deferred until measured latency or quota pressure justifies it.
+- `scripts/validate-live.mjs` exercises the deployed WebSocket, state sync, and persistence paths. End-to-end LLM-triggered tool invocation is validated through the browser UI; the headless script path is intentionally conservative and does not currently drive a full tool-call round-trip.
+
 ## Status
 
 Project-specific scaffold is live. The next milestones are deeper audit coverage, more refined follow-up reasoning, and final README polish for submission.

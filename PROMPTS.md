@@ -1,110 +1,131 @@
 # PROMPTS.md
 
-This file documents AI-assisted development used for `cf_ai_edge_inspector`.
+AI-assisted development prompts for `cf_ai_edge_inspector`.
 
-## How this file is organized
+## How two models were used
 
-Each entry records:
+Two development-time models were used in deliberately separated roles, so that every major decision was produced by one model and reviewed by the other. This pairing — implementation on one side, adversarial review on the other — was used to reduce single-model bias, catch hallucinated APIs, and surface Cloudflare-specific risks that a single model would have glossed over.
 
-- `Purpose`: why the prompt was used
-- `Tool / Model`: which AI tool was used
-- `Prompt`: the exact or near-exact prompt
-- `Outcome`: what was adopted, changed, or rejected
+- **GPT-5.4 (Codex)** — project scaffolding and implementation: repo setup, `cloudflare/agents-starter` conversion into the audit-agent skeleton, `wrangler.jsonc` binding wiring, `AuditAgent` + `WebsiteAuditWorkflow` implementation, Wrangler auth, deployment, and post-deploy verification.
+- **Claude Opus 4.6 (Claude Code)** — staged review and refinement: feasibility review of every plan before it was executed, cross-model audit of GPT-5.4's output, code-level evaluation and architectural tightening (Agent-thin / Workflow-thick boundary, step idempotency, isolated AI step, frontend state subscription), documentation polish, and end-to-end integration checks.
+
+Runtime LLM (Workers AI / Llama 3.3) is documented in `README.md` and is intentionally kept separate from the development-time models listed below.
+
+Each entry records two things:
+
+- **Model** — the AI tool used at that stage
+- **Prompt** — the engineering request sent to that model
 
 ## Entries
 
-### 2026-04-13 - Scoping, project selection, and architecture mapping (condensed)
+### Stage 1 — Planning
 
-Used GPT-5.4 Codex and Claude Opus 4.6 to lock in the assignment baseline (`cf_ai_`-prefixed public repo, `README.md`, `PROMPTS.md`, LLM + workflow + chat + memory, deployment strong-but-optional) and to pick the project concept `cf_ai_edge_inspector` — a chat-driven website audit agent.
-MVP stack fixed as Workers (runtime + deploy) + Agents SDK (chat agent) + Durable Objects (state/history) + Workflows (multi-step audit) + Workers AI (summary and follow-up).
+#### 2026-04-13 — Assignment scoping, project selection, and architecture mapping
 
-### 2026-04-13 - AI review of the AI-generated todo list
+**Model**  
+GPT-5.4 Codex, Claude Opus 4.6
 
-**Purpose**  
-Use a second model to sanity-check the detailed implementation plan and todo list that was produced with AI assistance, before committing to it. The goal was to catch scope creep, unrealistic steps, and missing Cloudflare-specific risks.
+**Prompt**  
+Summarize the hard requirements of Cloudflare's AI app assignment, separate them from recommended choices, and list the final deliverables required for submission. Propose several Cloudflare-native project ideas, rank them by platform fit and implementation risk, and recommend one. Map the assignment's four required components — LLM, workflow/coordination, chat input, and memory/state — onto the smallest viable Cloudflare-native stack.
 
-**Tool / Model**  
+#### 2026-04-13 — Feasibility review of the initial implementation plan
+
+**Model**  
 Claude Opus 4.6 (Claude Code)
 
 **Prompt**  
-Review whether this plan is feasible — followed by the full 20-step todo list, the end-to-end use case walkthrough, and the README/PROMPTS polish standards for `cf_ai_edge_inspector`. Asked the model to judge feasibility, call out weak points, and flag anything Cloudflare-specific that the plan underestimated.
+Review the proposed implementation plan and 20-step todo list for `cf_ai_edge_inspector`. Assess feasibility, identify weak points, and flag Cloudflare-specific risks the plan may underestimate, including Workers subrequest limits, Durable Object migration format, the Workflows versus Durable Objects trade-off, model latency on Workers AI, and Pages versus Workers + static assets deployment.
 
-**Outcome**  
-Plan confirmed feasible. Concrete adjustments adopted:
+#### 2026-04-13 — Cross-model validation of the review
 
-- Tighten the Agent vs. Workflow boundary — the Agent only handles intent routing, state I/O, and workflow invocation; all scanning logic lives inside the Workflow.
-- Use `llama-3.3-70b-instruct-fp8-fast` for summaries and a lighter `llama-3.1-8b-instruct` for follow-up Q&A to control latency and usage.
-- Treat "target site blocks Cloudflare egress" and fetch timeouts as first-class findings, not errors; set a 5–10s fetch budget and skip recursive crawling.
-- If `new_sqlite_classes` is used for Durable Object storage, declare it explicitly in the migration.
-- Keep Workflows as the coordination layer, but note a DO-internal state machine as an acceptable fallback if Workflows config becomes a blocker.
-- Deploy as Workers + static assets only; do not add Pages.
-
-### 2026-04-13 - Cross-model rebuttal on the review
-
-**Purpose**  
-Feed Claude Opus 4.6's feedback back to GPT-5.4 to stress-test each suggestion against official Cloudflare docs, rather than accepting the review blindly.
-
-**Tool / Model**  
+**Model**  
 GPT-5.4
 
 **Prompt**  
-Evaluate each of these suggestions on feasibility and whether they match current Cloudflare documentation. For every point, say whether to adopt, adjust, or reject, and cite the relevant Cloudflare docs when possible — followed by the six adjustments from the previous Claude Opus 4.6 review.
+Evaluate each suggestion from the previous review against current Cloudflare documentation. For every point, decide whether to adopt, adjust, or reject, and cite the relevant Cloudflare docs. Produce concrete adjustments covering the scan result status taxonomy, model selection strategy, Durable Object SQLite migration, and final deployment choice.
 
-**Outcome**  
-Most suggestions confirmed, with two notable changes:
+#### 2026-04-13 — Final consolidated plan
 
-- Reverted the dual-model plan to single-model for MVP: start with `@cf/meta/llama-3.3-70b-instruct-fp8-fast` only; consider splitting follow-up to `llama-3.1-8b-instruct` only if latency or usage becomes a real problem.
-- Added concrete status taxonomy for scan results: `success | partial | blocked | unreachable | invalid_url`.
-- Reconfirmed `new_sqlite_classes` as a hard requirement, not a suggestion.
-- Reconfirmed Workers + static assets binding over Pages; kept DO-only state machine as an explicit fallback if Workflows becomes a blocker.
-
-### 2026-04-13 - Final consolidated plan (AI-on-AI second pass)
-
-**Purpose**  
-Run a second adversarial pass with Claude Opus 4.6 on top of GPT-5.4's rebuttal, to produce one authoritative todo list instead of two competing versions.
-
-**Tool / Model**  
+**Model**  
 Claude Opus 4.6 (Claude Code)
 
 **Prompt**  
-Here is the other model's critique of your earlier suggestions (not necessarily correct). Produce the final version of the recommendation and a single consolidated todo list.
+Treat the cross-model critique of the earlier recommendations as input that is not necessarily correct, in order to counter sycophantic agreement and reduce hallucinated justification. Produce the final architectural recommendation and a single consolidated todo list. Resolve contradictions between the two prior rounds and add any constraints both drafts missed, in particular Workflow step idempotency, isolating the Workers AI call in its own Workflow step for independent retry and graceful degradation, and subscribing the frontend to Agent state instead of polling for progress.
 
-**Outcome**  
-Produced the final 18-step todo list. Three non-obvious additions that were not in either earlier draft:
+### Stage 2 — Scaffolding and repository setup
 
-- Each Workflow step must be idempotent with small serializable inputs/outputs; do not push raw HTML through step state.
-- The Workers AI call must live in its own Workflow step so it can be retried independently and cleanly downgraded to a findings-only response on failure.
-- The frontend subscribes to Agent state for progress instead of polling — this is the most Cloudflare-native integration point and should be called out in the README.
+#### 2026-04-13 — Project initialization from the final plan
 
-### 2026-04-13 - Init execution from the final todo list
+**Model**  
+GPT-5.4 Codex
 
-**Purpose**  
-Kick off implementation using the final consolidated plan — initialize the repo and verify the `cf_ai_edge_inspector` scaffold.
+**Prompt**  
+Initialize the project from the final consolidated plan: TypeScript only; Workers + Agents SDK + Durable Objects (SQLite) + Workflows + Workers AI; Agent-thin and Workflow-thick; frontend subscribes to Agent state. Set up the `cloudflare/agents-starter` scaffold at the repository root and prepare the project for dependency installation and Cloudflare binding configuration.
 
-**Tool / Model**  
+#### 2026-04-13 — Repository consolidation and remote setup
+
+**Model**  
 Claude Opus 4.6 (Claude Code)
 
 **Prompt**  
-Execute init following the final todo list — followed by the 25-step consolidated plan (TypeScript, Workers + Agents + DO with SQLite + Workflows + Workers AI, Agent-thin / Workflow-thick, frontend subscribes to state, single-model MVP).
+Consolidate the project at the repository root, remove duplicate scaffold directories, and ensure `node_modules`, `.wrangler`, `.dev.vars`, and local IDE configuration are excluded from version control. Create the initial commit, bind the GitHub remote, and publish the `main` branch.
 
-**Outcome**  
-Workspace git-initialized on `main`; `README.md` and `PROMPTS.md` staged. `cf_ai_edge_inspector/` already contains the `cloudflare/agents-starter` scaffold (TypeScript, `wrangler.jsonc`, `src/`, Vite). Next: install deps, wire Workers AI / DO (SQLite migration) / Workflows bindings, then begin types-first implementation.
+### Stage 3 — Implementation
+
+#### 2026-04-13 — Starter conversion into the project-specific skeleton
+
+**Model**  
+GPT-5.4 Codex
+
+**Prompt**  
+Convert the generic Cloudflare starter into the project-specific skeleton according to the final plan. Keep the implementation aligned with the locked-in architectural constraints.
+
+#### 2026-04-13 — Staged review of implementation progress
+
+**Model**  
+Claude Opus 4.6 (Claude Code)
+
+**Prompt**  
+Review the current staged deliverables against the locked-in plan, identify drift, gaps, and risks, and produce a refined todo list for the next execution pass. Proceed to execute the refined list autonomously, then run the `/simplify` skill on the resulting changes for code reuse, quality, and efficiency cleanup.
+
+### Stage 4 — Validation and deployment
+
+#### 2026-04-13 — Local validation and blocker diagnosis
+
+**Model**  
+GPT-5.4 Codex
+
+**Prompt**  
+Install root dependencies, regenerate `env.d.ts`, run lint and TypeScript checks, and verify whether local dev starts successfully. If local dev is blocked, identify the exact prerequisite and update the docs so the repository reflects the current state truthfully.
+
+#### 2026-04-13 — Cloudflare authentication, deployment, and live verification
+
+**Model**  
+GPT-5.4 Codex
+
+**Prompt**  
+Continue executing the remaining todo list. Authenticate Wrangler with Cloudflare, start local dev, identify any binding-related blockers, deploy the current Worker, verify the live `workers.dev` URL, and update README/PROMPTS so the deployed state is accurately documented.
+
+#### 2026-04-13 — Post-deployment assessment and submission readiness
+
+**Model**  
+Claude Opus 4.6 (Claude Code)
+
+**Prompt**  
+Inspect the current git state, local implementation, and the live deployment. Evaluate whether the project is in a submittable state, identify the highest-impact remaining gaps — including uncommitted implementation work, end-to-end browser verification of the audit flow, real-URL coverage for status taxonomy, and README polish — and produce a prioritized next-step plan.
 
 ## Suggested future entries
 
 Add entries as development continues for:
 
-- prompt design for audit summaries
-- workflow step design
-- error handling and fallback behavior
-- UI copy and interaction polish
-- README wording and project framing
-- deployment troubleshooting
+- audit summary prompt design
+- workflow step design and error handling
+- follow-up question prompt templates
+- README wording and deployment troubleshooting
 
 ## Guidance for future updates
 
-- Record prompts as you use them instead of reconstructing them at the end.
-- Keep prompts close to the actual text you used.
-- If a prompt led to a rejected idea, note that briefly in `Outcome`.
-- If you use Claude Code with `Claude Opus 4.6`, add it exactly under `Tool / Model`.
-- If you use GPT-5.4 for implementation or debugging help, add separate entries instead of merging unrelated prompts together.
+- Record prompts as they are used, not reconstructed at the end.
+- Keep each prompt focused on the engineering intent, not on tone or formatting instructions.
+- Use separate entries for unrelated prompts, even on the same day.
+- Keep development-time models (Claude Opus 4.6, GPT-5.4) distinct from the runtime LLM (Workers AI).
