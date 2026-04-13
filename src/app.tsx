@@ -242,6 +242,7 @@ function Chat() {
   const [mcpUrl, setMcpUrl] = useState("");
   const [isAddingServer, setIsAddingServer] = useState(false);
   const [latestAudit, setLatestAudit] = useState<AuditResult | null>(null);
+  const [isClearing, setIsClearing] = useState(false);
   const mcpPanelRef = useRef<HTMLDivElement>(null);
 
   const agent = useAgent<AuditAgent>({
@@ -453,6 +454,47 @@ function Chat() {
     sendMessage({ role: "user", parts });
     if (textareaRef.current) textareaRef.current.style.height = "auto";
   }, [input, attachments, isStreaming, sendMessage]);
+
+  const handleClear = useCallback(async () => {
+    if (
+      isClearing ||
+      isStreaming ||
+      auditState?.runState === "running" ||
+      !agent.identified
+    ) {
+      return;
+    }
+
+    setIsClearing(true);
+    try {
+      await agent.stub.clearAuditSession();
+      clearHistory();
+      setLatestAudit(null);
+      toasts.add({
+        title: "Session cleared",
+        description: "Chat history and persisted audit results were reset.",
+        variant: "success"
+      });
+    } catch (error) {
+      toasts.add({
+        title: "Clear failed",
+        description:
+          error instanceof Error
+            ? error.message
+            : "The session could not be reset.",
+        variant: "error"
+      });
+    } finally {
+      setIsClearing(false);
+    }
+  }, [
+    agent,
+    auditState?.runState,
+    clearHistory,
+    isClearing,
+    isStreaming,
+    toasts
+  ]);
 
   return (
     <div
@@ -671,9 +713,15 @@ function Chat() {
             <Button
               variant="secondary"
               icon={<TrashIcon size={16} />}
-              onClick={clearHistory}
+              onClick={handleClear}
+              disabled={
+                !connected ||
+                isStreaming ||
+                isClearing ||
+                auditState?.runState === "running"
+              }
             >
-              Clear
+              {isClearing ? "Clearing..." : "Clear"}
             </Button>
           </div>
         </div>

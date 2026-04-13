@@ -334,6 +334,27 @@ async function main() {
       );
     }
 
+    await reconnected.stub.clearAuditSession();
+    await sleep(1000);
+
+    const clearedAudit = await reconnected.stub.getLatestAuditResult();
+    const clearedTranscript = await fetchMessages(ROOM);
+
+    assert(
+      clearedAudit === null,
+      "Expected clearAuditSession() to remove the saved audit result."
+    );
+    assert(
+      clearedTranscript.length === 0,
+      "Expected clearAuditSession() to remove persisted chat messages."
+    );
+    assert(
+      reconnected.state?.runState === "idle" &&
+        reconnected.state?.history?.length === 0 &&
+        reconnected.state?.latestSummary === null,
+      "Expected clearAuditSession() to reset synced Agent state."
+    );
+
     console.log(
       JSON.stringify(
         {
@@ -349,7 +370,8 @@ async function main() {
           reconnectDebug,
           stateTransitions,
           reconnectStateCount: reconnectStateTransitions.length,
-          followUpPreview: lastAssistantText.slice(0, 240)
+          followUpPreview: lastAssistantText.slice(0, 240),
+          clearedState: reconnected.state
         },
         null,
         2

@@ -63,6 +63,7 @@ This is not a vulnerability scanner or crawler. It inspects one public URL and r
 5. The workflow builds structured findings, asks `Workers AI` for a short summary and prioritized recommendations, then calls `step.reportComplete(result)`.
 6. `AuditAgent.onWorkflowComplete()` persists the final result into SQLite and updates chat-visible history.
 7. The user asks follow-up questions such as `What should I fix first?` and the agent answers from the saved audit result.
+8. The `Clear` action resets the current session by clearing chat messages, persisted audit history, and synced Agent state.
 
 ## Core Files
 
@@ -111,6 +112,7 @@ This deploys the Worker, static assets, Durable Object binding, Workflow binding
 - `What should I fix first?`
 - `Show me the latest audit result`
 - `Compare with my previous scan`
+- `Clear the current session`
 
 ## Validation
 
@@ -133,6 +135,7 @@ Validated flows as of this version:
 - `https://example.com`: partial result, progress sync, findings, persistence, follow-up
 - `http://github.com`: redirect path, persistence, follow-up
 - `http://`: `invalid_url` path, persistence, follow-up
+- `Clear`: chat transcript, audit history, and synced Agent state reset to empty
 
 ## AI-Assisted Development
 
@@ -149,4 +152,5 @@ Detailed prompt records belong in [PROMPTS.md](./PROMPTS.md).
 - Fetches use a fixed timeout and may classify origin blocking or rate limiting as a valid finding.
 - One `Workers AI` model currently handles both summary generation and follow-up answers.
 - The UI still contains some starter-era panels that are not essential to the assignment.
+- `Clear` is intentionally disabled while an audit is running, because clearing mid-workflow would create inconsistent state once the workflow completes.
 - A README screenshot/GIF is not included yet.

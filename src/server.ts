@@ -225,6 +225,20 @@ export class AuditAgent extends AIChatAgent<Env, AgentState> {
     return this.getLatestAudit();
   }
 
+  @callable()
+  async clearAuditSession() {
+    if (this.state.runState === "running" && this.state.activeRunId) {
+      throw new Error("Cannot clear the session while an audit is running.");
+    }
+
+    this.sql`DELETE FROM audit_runs`;
+    this.sql`DELETE FROM cf_ai_chat_agent_messages`;
+    this.messages = [];
+    this.setState({ ...INITIAL_STATE });
+
+    return { ok: true };
+  }
+
   private ensureAuditTable() {
     this.sql`
       CREATE TABLE IF NOT EXISTS audit_runs (
