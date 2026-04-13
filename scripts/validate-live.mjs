@@ -5,7 +5,8 @@ const HOST =
   process.env.AGENT_HOST ?? "cf-ai-edge-inspector.zheng-jiaju.workers.dev";
 const AGENT = process.env.AGENT_NAME ?? "AuditAgent";
 const ROOM = process.env.AGENT_ROOM ?? `e2e-${Date.now()}`;
-const AUDIT_URL = process.env.AUDIT_URL ?? "https://example.com";
+const AUDIT_URL =
+  process.argv[2] ?? process.env.AUDIT_URL ?? "https://example.com";
 
 const CHAT_RESPONSE = "cf_agent_use_chat_response";
 const STATE_UPDATE = "cf_agent_state";
@@ -252,14 +253,21 @@ async function main() {
       completedState.progress === 100,
       `Expected progress 100, received ${completedState.progress}.`
     );
-    assert(
-      stateTransitions.some((entry) => entry.phase === "fetching"),
-      "Expected to observe a fetching phase over state sync."
-    );
-    assert(
-      stateTransitions.some((entry) => entry.phase === "summarizing"),
-      "Expected to observe a summarizing phase over state sync."
-    );
+    if (latestAudit.status === "invalid_url") {
+      assert(
+        stateTransitions.some((entry) => entry.phase === "done"),
+        "Expected the invalid URL path to transition directly into done."
+      );
+    } else {
+      assert(
+        stateTransitions.some((entry) => entry.phase === "fetching"),
+        "Expected to observe a fetching phase over state sync."
+      );
+      assert(
+        stateTransitions.some((entry) => entry.phase === "summarizing"),
+        "Expected to observe a summarizing phase over state sync."
+      );
+    }
 
     assert(
       firstTranscript.length >= 2,
@@ -314,10 +322,17 @@ async function main() {
       lastAssistantText.length > 0,
       "Expected the follow-up turn to end with a textual assistant response."
     );
-    assert(
-      /fix|priority|recommend|first/i.test(lastAssistantText),
-      "Expected the follow-up response to discuss what to fix first."
-    );
+    if (latestAudit.status === "invalid_url") {
+      assert(
+        /invalid|url|submit|public/i.test(lastAssistantText),
+        "Expected the follow-up response to explain the invalid URL issue."
+      );
+    } else {
+      assert(
+        /fix|priority|recommend|first/i.test(lastAssistantText),
+        "Expected the follow-up response to discuss what to fix first."
+      );
+    }
 
     console.log(
       JSON.stringify(

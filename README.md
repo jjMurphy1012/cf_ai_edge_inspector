@@ -1,62 +1,86 @@
 # cf_ai_edge_inspector
 
-An AI-powered website audit agent built on Cloudflare. Users can submit a URL through a chat interface, trigger a multi-step audit workflow, review structured findings, and ask follow-up questions based on persisted scan history.
+Cloudflare-native AI website audit agent. A user submits a public URL in chat, the agent starts a durable audit workflow, streams progress through Agent state sync, stores the completed result in Durable Object SQLite, and answers follow-up questions from the saved audit history.
 
-## Why this project
+Live demo: https://cf-ai-edge-inspector.zheng-jiaju.workers.dev
 
-This project is designed for Cloudflare's AI app assignment and intentionally uses Cloudflare-native building blocks for AI inference, workflow orchestration, stateful coordination, and deployment.
+## Why Cloudflare
 
-## Assignment coverage
+This project was built specifically for Cloudflare's AI app assignment and keeps the core runtime on Cloudflare:
 
-| Requirement                  | How this project satisfies it                    |
-| ---------------------------- | ------------------------------------------------ |
-| LLM                          | Cloudflare Workers AI                            |
-| Workflow / coordination      | Cloudflare Workflows plus Agents/Durable Objects |
-| User input via chat or voice | Chat UI                                          |
-| Memory or state              | Durable Objects state and persisted scan history |
+- `Workers` host the app and deployed link.
+- `Agents SDK` provides the stateful chat entry point.
+- `Durable Objects` hold sync state and SQLite-backed history.
+- `Workflows` run the multi-step audit.
+- `Workers AI` generates summaries and follow-up answers.
 
-## Planned architecture
+## Assignment Coverage
 
-- `Workers AI` generates summaries, prioritizes findings, and answers follow-up questions.
-- `Agents SDK` provides the stateful chat agent entry point.
-- `Durable Objects` persist audit state, progress, and scan history.
-- `Workflows` execute the website audit as a durable multi-step job.
-- `Workers` host the application and expose the deployed link.
+| Requirement                    | Implementation                                                         | Files                                                                  |
+| ------------------------------ | ---------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `LLM`                          | `Workers AI` with `@cf/meta/llama-3.3-70b-instruct-fp8-fast`           | [src/server.ts](./src/server.ts), [src/workflow.ts](./src/workflow.ts) |
+| `Workflow / coordination`      | `WebsiteAuditWorkflow` plus `AuditAgent` intent routing and state sync | [src/workflow.ts](./src/workflow.ts), [src/server.ts](./src/server.ts) |
+| `User input via chat or voice` | Chat UI over Agent WebSocket transport                                 | [src/app.tsx](./src/app.tsx)                                           |
+| `Memory or state`              | Durable Object synced state plus SQLite-backed audit history           | [src/server.ts](./src/server.ts)                                       |
 
-## Planned user flow
+## Architecture
 
-1. A user opens the app and submits a URL in chat.
-2. The agent validates the URL and starts an audit workflow.
-3. The workflow fetches the site, inspects response behavior and headers, and produces structured findings.
-4. Workers AI turns those findings into a concise summary and remediation plan.
-5. The app stores the result and lets the user continue the conversation with follow-up questions.
+```mermaid
+flowchart LR
+    U[User in Chat UI] --> UI[React chat client]
+    UI --> A[AuditAgent]
+    A --> S[Durable Object state sync]
+    A --> W[WebsiteAuditWorkflow]
+    W --> F[Homepage fetch and inspection]
+    W --> AI[Workers AI]
+    W --> C[reportComplete callback]
+    C --> A
+    A --> DB[DO SQLite history]
+    DB --> A
+    A --> UI
+```
 
-## Current implementation status
+## What It Audits
 
-The generic starter has been converted into the first project-specific skeleton:
+MVP scope is intentionally narrow and deterministic:
 
-- `AuditAgent` replaces the default demo `ChatAgent`
-- `WebsiteAuditWorkflow` is registered in `wrangler.jsonc`
-- audit types and scan status enums live in `src/types.ts`
-- the workflow performs a lightweight homepage fetch, header inspection, metadata extraction, and AI summary generation
-- the frontend now exposes synced Agent state for audit progress
-- completed audit results are persisted in the Agent's SQLite-backed SQL store
+- URL validity and public reachability
+- HTTP status and redirect behavior
+- HTTPS enforcement
+- common security headers
+- cache headers
+- homepage `title`
+- homepage `meta description`
 
-## AI-assisted development
+This is not a vulnerability scanner or crawler. It inspects one public URL and reports edge, delivery, and header posture.
 
-AI-assisted coding was used during planning and implementation. The primary tools used for this project are:
+## End-to-End Flow
 
-- `Claude Opus 4.6` via Claude Code
-- `GPT-5.4` via Codex
+1. The user enters a URL such as `Analyze https://example.com`.
+2. `AuditAgent` classifies the message as a new audit request and starts `WebsiteAuditWorkflow`.
+3. The workflow updates Agent state as it moves through `validating -> fetching -> inspecting -> summarizing -> persisting`.
+4. The frontend subscribes to Agent state and renders progress in real time without polling.
+5. The workflow builds structured findings, asks `Workers AI` for a short summary and prioritized recommendations, then calls `step.reportComplete(result)`.
+6. `AuditAgent.onWorkflowComplete()` persists the final result into SQLite and updates chat-visible history.
+7. The user asks follow-up questions such as `What should I fix first?` and the agent answers from the saved audit result.
 
-Detailed prompts, usage notes, and outcomes will be documented in [PROMPTS.md](./PROMPTS.md).
+## Core Files
 
-## Local development
+- [src/server.ts](./src/server.ts): `AuditAgent`, chat intent routing, follow-up handling, SQLite history, workflow completion callbacks
+- [src/workflow.ts](./src/workflow.ts): multi-step audit workflow, URL normalization, fetch/header inspection, AI summary generation
+- [src/types.ts](./src/types.ts): audit result, finding, and synced state types
+- [src/app.tsx](./src/app.tsx): chat UI, live progress, latest result, recent history
+- [wrangler.jsonc](./wrangler.jsonc): Workers AI, Durable Object, Workflow, and asset bindings
+- [scripts/validate-live.mjs](./scripts/validate-live.mjs): deployed end-to-end validation script
+
+## Local Development
 
 Prerequisites:
 
-1. Install dependencies.
-2. Authenticate with Cloudflare using Wrangler.
+- Node.js
+- npm
+- Cloudflare account
+- Wrangler authenticated with Cloudflare
 
 Commands:
 
@@ -69,37 +93,60 @@ npm run dev
 
 Notes:
 
-- Local dev currently requires `wrangler login` because the `Workers AI` binding uses `"remote": true`.
-- If `wrangler.jsonc` changes, rerun `npm run types` to refresh `env.d.ts`.
+- `Workers AI` uses a remote binding, so local development requires `wrangler login`.
+- If `wrangler.jsonc` changes, rerun `npm run types`.
 
-## Deployment
-
-Live deployment:
-
-- `https://cf-ai-edge-inspector.zheng-jiaju.workers.dev`
-
-Expected deploy flow:
+## Deploy
 
 ```bash
 npm run deploy
 ```
 
-Deployment status:
+This deploys the Worker, static assets, Durable Object binding, Workflow binding, and Workers AI binding.
 
-- deployed successfully to Cloudflare Workers
-- `workers.dev` root returns `HTTP 200`
-- bound resources confirmed during deploy:
-  - `AuditAgent` Durable Object
-  - `WebsiteAuditWorkflow`
-  - `Workers AI`
+## Example Prompts
 
-## Known limitations
+- `Analyze https://example.com`
+- `Audit developers.cloudflare.com`
+- `What should I fix first?`
+- `Show me the latest audit result`
+- `Compare with my previous scan`
 
-- MVP audit scope is limited to the homepage: reachability, status code, redirect chain, HTTPS, common security headers, cache headers, `title`, and `meta description`. No recursive crawl, no screenshot, no vulnerability scanning.
-- Fetch budget is fixed at 5–10s per target; timeouts and Cloudflare egress blocks are reported as `blocked` / `unreachable` findings rather than system errors.
-- A single Workers AI model (`@cf/meta/llama-3.3-70b-instruct-fp8-fast`) handles both summaries and follow-up reasoning. Splitting to a lighter model for follow-up is deferred until measured latency or quota pressure justifies it.
-- `scripts/validate-live.mjs` exercises the deployed WebSocket, state sync, and persistence paths. End-to-end LLM-triggered tool invocation is validated through the browser UI; the headless script path is intentionally conservative and does not currently drive a full tool-call round-trip.
+## Validation
 
-## Status
+Static checks:
 
-Project-specific scaffold is live. The next milestones are deeper audit coverage, more refined follow-up reasoning, and final README polish for submission.
+```bash
+npm run check
+```
+
+Live end-to-end validation against the deployed Worker:
+
+```bash
+npm run check:live
+npm run check:live -- http://github.com
+npm run check:live -- http://
+```
+
+Validated flows as of this version:
+
+- `https://example.com`: partial result, progress sync, findings, persistence, follow-up
+- `http://github.com`: redirect path, persistence, follow-up
+- `http://`: `invalid_url` path, persistence, follow-up
+
+## AI-Assisted Development
+
+AI-assisted coding was used during planning and implementation.
+
+- `Claude Opus 4.6` via Claude Code
+- `GPT-5.4` via Codex
+
+Detailed prompt records belong in [PROMPTS.md](./PROMPTS.md).
+
+## Known Limitations
+
+- The audit only checks the homepage response. No recursive crawl, screenshotting, browser rendering, or vulnerability scanning.
+- Fetches use a fixed timeout and may classify origin blocking or rate limiting as a valid finding.
+- One `Workers AI` model currently handles both summary generation and follow-up answers.
+- The UI still contains some starter-era panels that are not essential to the assignment.
+- A README screenshot/GIF is not included yet.

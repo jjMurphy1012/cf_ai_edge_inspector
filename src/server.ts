@@ -109,6 +109,16 @@ function classifyIntent(text: string): AuditIntent {
     return { kind: "start_audit", url: candidateUrl };
   }
 
+  const commandTarget = text.match(
+    /\b(?:analyze|audit|inspect|check|review)\b\s+(.+)/i
+  )?.[1];
+  if (commandTarget) {
+    return {
+      kind: "start_audit",
+      url: commandTarget.trim().replace(/^[("'`\s]+|[)"'`,.!?\s]+$/g, "")
+    };
+  }
+
   if (
     /(compare|what changed|changed|difference|previous scan|last scan)/i.test(
       text
