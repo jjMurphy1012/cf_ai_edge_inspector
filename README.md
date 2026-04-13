@@ -8,6 +8,9 @@ Live demo: https://cf-ai-edge-inspector.zheng-jiaju.workers.dev
 
 ![cf_ai_edge_inspector live app](./docs/live-home.png)
 
+Shared demo room with a saved audit result:
+`https://cf-ai-edge-inspector.zheng-jiaju.workers.dev/?room=readme-demo-2`
+
 ## Why Cloudflare
 
 This project was built specifically for Cloudflare's AI app assignment and keeps the core runtime on Cloudflare:
@@ -117,6 +120,7 @@ This deploys the Worker, static assets, Durable Object binding, Workflow binding
 - `Show me the latest audit result`
 - `Compare with my previous scan`
 - `Clear the current session`
+- Open a fixed room with `?room=<name>` to revisit the same persisted session
 
 ## Validation
 

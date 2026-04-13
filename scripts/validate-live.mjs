@@ -1,12 +1,24 @@
 import { AgentClient } from "agents/client";
 import WS from "ws";
 
+const cliArgs = process.argv.slice(2);
+const keepRoom = cliArgs.includes("--keep-room");
+const roomFlagIndex = cliArgs.indexOf("--room");
+const roomFromCli =
+  roomFlagIndex >= 0 && cliArgs[roomFlagIndex + 1]
+    ? cliArgs[roomFlagIndex + 1]
+    : null;
+const auditArg = cliArgs.find((arg, index) => {
+  if (arg === "--keep-room" || arg === "--room") return false;
+  if (roomFlagIndex >= 0 && index === roomFlagIndex + 1) return false;
+  return !arg.startsWith("--");
+});
+
 const HOST =
   process.env.AGENT_HOST ?? "cf-ai-edge-inspector.zheng-jiaju.workers.dev";
 const AGENT = process.env.AGENT_NAME ?? "AuditAgent";
-const ROOM = process.env.AGENT_ROOM ?? `e2e-${Date.now()}`;
-const AUDIT_URL =
-  process.argv[2] ?? process.env.AUDIT_URL ?? "https://example.com";
+const ROOM = roomFromCli ?? process.env.AGENT_ROOM ?? `e2e-${Date.now()}`;
+const AUDIT_URL = auditArg ?? process.env.AUDIT_URL ?? "https://example.com";
 
 const CHAT_RESPONSE = "cf_agent_use_chat_response";
 const STATE_UPDATE = "cf_agent_state";
@@ -334,26 +346,31 @@ async function main() {
       );
     }
 
-    await reconnected.stub.clearAuditSession();
-    await sleep(1000);
+    let clearedState = null;
+    if (!keepRoom) {
+      await reconnected.stub.clearAuditSession();
+      await sleep(1000);
 
-    const clearedAudit = await reconnected.stub.getLatestAuditResult();
-    const clearedTranscript = await fetchMessages(ROOM);
+      const clearedAudit = await reconnected.stub.getLatestAuditResult();
+      const clearedTranscript = await fetchMessages(ROOM);
 
-    assert(
-      clearedAudit === null,
-      "Expected clearAuditSession() to remove the saved audit result."
-    );
-    assert(
-      clearedTranscript.length === 0,
-      "Expected clearAuditSession() to remove persisted chat messages."
-    );
-    assert(
-      reconnected.state?.runState === "idle" &&
-        reconnected.state?.history?.length === 0 &&
-        reconnected.state?.latestSummary === null,
-      "Expected clearAuditSession() to reset synced Agent state."
-    );
+      assert(
+        clearedAudit === null,
+        "Expected clearAuditSession() to remove the saved audit result."
+      );
+      assert(
+        clearedTranscript.length === 0,
+        "Expected clearAuditSession() to remove persisted chat messages."
+      );
+      assert(
+        reconnected.state?.runState === "idle" &&
+          reconnected.state?.history?.length === 0 &&
+          reconnected.state?.latestSummary === null,
+        "Expected clearAuditSession() to reset synced Agent state."
+      );
+
+      clearedState = reconnected.state;
+    }
 
     console.log(
       JSON.stringify(
@@ -371,7 +388,8 @@ async function main() {
           stateTransitions,
           reconnectStateCount: reconnectStateTransitions.length,
           followUpPreview: lastAssistantText.slice(0, 240),
-          clearedState: reconnected.state
+          keptRoom: keepRoom,
+          clearedState
         },
         null,
         2

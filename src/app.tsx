@@ -222,6 +222,10 @@ function ToolPartView({
 // ── Main chat ─────────────────────────────────────────────────────────
 
 function Chat() {
+  const roomParam = globalThis.location
+    ? new URLSearchParams(globalThis.location.search).get("room")
+    : null;
+  const roomName = roomParam?.trim() ? roomParam.trim() : undefined;
   const [connected, setConnected] = useState(false);
   const [input, setInput] = useState("");
   const [showDebug, setShowDebug] = useState(false);
@@ -247,6 +251,7 @@ function Chat() {
 
   const agent = useAgent<AuditAgent>({
     agent: "AuditAgent",
+    name: roomName,
     onOpen: useCallback(() => setConnected(true), []),
     onClose: useCallback(() => setConnected(false), []),
     onError: useCallback(
