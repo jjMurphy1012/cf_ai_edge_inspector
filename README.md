@@ -7,6 +7,33 @@
 
 In one sentence: this project is a chat-based website audit agent that runs on `Workers`, coordinates work with `Workflows`, stores results in `Durable Object` SQLite, and lets the user ask follow-up questions about saved audit history.
 
+## Assignment Snapshot
+
+This repository already covers the required assignment components:
+
+| Requirement | Implementation |
+| --- | --- |
+| `LLM` | `Workers AI` with `@cf/meta/llama-3.3-70b-instruct-fp8-fast` |
+| `Workflow / coordination` | `WebsiteAuditWorkflow` plus `AuditAgent` intent routing and live state sync |
+| `User input via chat or voice` | Chat UI over Agent WebSocket transport |
+| `Memory or state` | Durable Object synced state for live progress plus SQLite-backed audit history for saved results and follow-up answers |
+
+Hard requirements also covered in this repo:
+
+- Repository name starts with `cf_ai_`
+- `README.md` includes local run instructions and deployed links
+- `PROMPTS.md` is included for AI prompt disclosure
+- Live deployment is available on Cloudflare Workers
+
+## AI-Assisted Development
+
+AI-assisted coding was used during planning and implementation.
+
+- `Claude Opus 4.6` via Claude Code
+- `GPT-5.4` via Codex
+
+Detailed prompt records belong in [PROMPTS.md](./PROMPTS.md).
+
 ## End-to-End Flow
 
 1. The user enters a URL such as `Analyze https://example.com`.
@@ -44,7 +71,7 @@ This project was built specifically for Cloudflare's AI app assignment and keeps
 | `LLM`                          | `Workers AI` with `@cf/meta/llama-3.3-70b-instruct-fp8-fast`           | [src/server.ts](./src/server.ts), [src/workflow.ts](./src/workflow.ts) |
 | `Workflow / coordination`      | `WebsiteAuditWorkflow` plus `AuditAgent` intent routing and state sync | [src/workflow.ts](./src/workflow.ts), [src/server.ts](./src/server.ts) |
 | `User input via chat or voice` | Chat UI over Agent WebSocket transport                                 | [src/app.tsx](./src/app.tsx)                                           |
-| `Memory or state`              | Durable Object synced state plus SQLite-backed audit history           | [src/server.ts](./src/server.ts)                                       |
+| `Memory or state`              | Durable Object synced state plus SQLite-backed audit history           | [src/server.ts](./src/server.ts), [src/types.ts](./src/types.ts)       |
 
 ## Architecture
 
@@ -149,15 +176,6 @@ Validated flows as of this version:
 - `http://github.com`: redirect path, persistence, follow-up
 - `http://`: `invalid_url` path, persistence, follow-up
 - `Clear`: chat transcript, audit history, and synced Agent state reset to empty
-
-## AI-Assisted Development
-
-AI-assisted coding was used during planning and implementation.
-
-- `Claude Opus 4.6` via Claude Code
-- `GPT-5.4` via Codex
-
-Detailed prompt records belong in [PROMPTS.md](./PROMPTS.md).
 
 ## Known Limitations
 
