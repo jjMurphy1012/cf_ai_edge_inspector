@@ -20,13 +20,13 @@ Each entry records two things:
 
 ### Stage 1 — Planning
 
-#### 2026-04-13 — Assignment scoping, project selection, and architecture mapping
+#### 2026-04-13 — Project framing, concept selection, and architecture mapping
 
 **Model**  
 GPT-5.4 Codex, Claude Opus 4.6
 
 **Prompt**  
-Summarize the hard requirements of Cloudflare's AI app assignment, separate them from recommended choices, and list the final deliverables required for submission. Propose several Cloudflare-native project ideas, rank them by platform fit and implementation risk, and recommend one. Map the assignment's four required components — LLM, workflow/coordination, chat input, and memory/state — onto the smallest viable Cloudflare-native stack.
+Summarize the non-negotiable project requirements, separate them from recommended implementation choices, and list the deliverables needed for a polished public repository and live demo. Propose several Cloudflare-native product concepts, rank them by platform fit and implementation risk, and recommend one. Map the four core components — LLM, workflow/coordination, chat input, and memory/state — onto the smallest viable Cloudflare-native stack.
 
 #### 2026-04-13 — Feasibility review of the initial implementation plan
 
@@ -106,13 +106,13 @@ GPT-5.4 Codex
 **Prompt**  
 Continue executing the remaining todo list. Authenticate Wrangler with Cloudflare, start local dev, identify any binding-related blockers, deploy the current Worker, verify the live `workers.dev` URL, and update README/PROMPTS so the deployed state is accurately documented.
 
-#### 2026-04-13 — Post-deployment assessment and submission readiness
+#### 2026-04-13 — Post-deployment assessment and release readiness
 
 **Model**  
 Claude Opus 4.6 (Claude Code)
 
 **Prompt**  
-Inspect the current git state, local implementation, and the live deployment. Evaluate whether the project is in a submittable state, identify the highest-impact remaining gaps — including uncommitted implementation work, end-to-end browser verification of the audit flow, real-URL coverage for status taxonomy, and README polish — and produce a prioritized next-step plan.
+Inspect the current git state, local implementation, and the live deployment. Evaluate whether the project is in a strong publishable state, identify the highest-impact remaining gaps — including uncommitted implementation work, end-to-end browser verification of the audit flow, real-URL coverage for status taxonomy, and README polish — and produce a prioritized next-step plan.
 
 ### Stage 5 — Hardening and cleanup
 
@@ -122,7 +122,7 @@ Inspect the current git state, local implementation, and the live deployment. Ev
 Claude Opus 4.6 (Claude Code)
 
 **Prompt**  
-Review the recently changed implementation files along three dimensions in parallel: reuse of existing utilities and SDK helpers, code quality (redundant state, copy-paste, leaky abstractions, stringly-typed code, narrating comments), and efficiency (hot-path bloat, missed concurrency, no-op state broadcasts, listener leaks). Aggregate findings, fix only the high-impact low-risk items, and defer broader refactors that are not safe to land pre-submission. Preserve architectural boundaries and keep the deployed behavior intact.
+Review the recently changed implementation files along three dimensions in parallel: reuse of existing utilities and SDK helpers, code quality (redundant state, copy-paste, leaky abstractions, stringly-typed code, narrating comments), and efficiency (hot-path bloat, missed concurrency, no-op state broadcasts, listener leaks). Aggregate findings, fix only the high-impact low-risk items, and defer broader refactors that are not safe to land in the current release pass. Preserve architectural boundaries and keep the deployed behavior intact.
 
 #### 2026-04-13 — Audit routing stabilization and live validation
 
