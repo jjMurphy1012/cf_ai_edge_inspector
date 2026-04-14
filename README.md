@@ -11,12 +11,12 @@ It runs on `Workers`, coordinates audits with `Workflows`, stores progress and h
 
 Core capabilities:
 
-| Capability | Implementation |
-| --- | --- |
-| `LLM` | `Workers AI` with `@cf/meta/llama-3.3-70b-instruct-fp8-fast` |
-| `Workflow / coordination` | `WebsiteAuditWorkflow` plus `AuditAgent` intent routing and live state sync |
-| `User input via chat or voice` | Chat UI over Agent WebSocket transport |
-| `Memory or state` | Durable Object synced state for live progress plus SQLite-backed audit history for saved results and follow-up answers |
+| Capability                     | Implementation                                                                                                         |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `LLM`                          | `Workers AI` with `@cf/meta/llama-3.3-70b-instruct-fp8-fast`                                                           |
+| `Workflow / coordination`      | `WebsiteAuditWorkflow` plus `AuditAgent` intent routing and live state sync                                            |
+| `User input via chat or voice` | Chat UI over Agent WebSocket transport                                                                                 |
+| `Memory or state`              | Durable Object synced state for live progress plus SQLite-backed audit history for saved results and follow-up answers |
 
 Project details:
 
