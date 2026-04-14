@@ -5,11 +5,11 @@
 
 `cf_ai_edge_inspector` is a Cloudflare-native AI website audit app. A user submits a public URL, the app inspects the homepage response for redirect behavior, HTTPS posture, security headers, cache headers, and basic metadata, then uses `Workers AI` to summarize findings and recommend fixes.
 
-In one sentence: this project is a chat-based website audit agent that runs on `Workers`, coordinates work with `Workflows`, stores results in `Durable Object` SQLite, and lets the user ask follow-up questions about saved audit history.
+It runs on `Workers`, coordinates audits with `Workflows`, stores progress and history in `Durable Objects`, and supports follow-up questions against saved audit results.
 
 ## Project Snapshot
 
-This repository includes the following core components:
+Core capabilities:
 
 | Capability | Implementation |
 | --- | --- |
@@ -18,16 +18,15 @@ This repository includes the following core components:
 | `User input via chat or voice` | Chat UI over Agent WebSocket transport |
 | `Memory or state` | Durable Object synced state for live progress plus SQLite-backed audit history for saved results and follow-up answers |
 
-Repository details:
+Project details:
 
-- Repository name starts with `cf_ai_`
+- Live deployment is available on Cloudflare Workers
 - `README.md` includes local run instructions and deployed links
 - `PROMPTS.md` records development-time AI prompts
-- Live deployment is available on Cloudflare Workers
 
 ## AI-Assisted Development
 
-AI-assisted coding was used during planning and implementation.
+AI-assisted coding was used during planning, implementation, and review.
 
 - `Claude Opus 4.6` via Claude Code
 - `GPT-5.4` via Codex
@@ -92,7 +91,7 @@ flowchart LR
 
 ## What It Audits
 
-MVP scope is intentionally narrow and deterministic:
+The audit scope is intentionally narrow and deterministic:
 
 - URL validity and public reachability
 - HTTP status and redirect behavior
@@ -102,7 +101,7 @@ MVP scope is intentionally narrow and deterministic:
 - homepage `title`
 - homepage `meta description`
 
-This is not a vulnerability scanner or crawler. It inspects one public URL and reports edge, delivery, and header posture.
+This is not a vulnerability scanner or crawler. It inspects a single public URL and reports edge, delivery, and header posture.
 
 ## Core Files
 
@@ -170,7 +169,7 @@ npm run check:live -- http://github.com
 npm run check:live -- http://
 ```
 
-Validated flows as of this version:
+Validated flows:
 
 - `https://example.com`: partial result, progress sync, findings, persistence, follow-up
 - `http://github.com`: redirect path, persistence, follow-up
