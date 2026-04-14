@@ -46,7 +46,7 @@ Detailed prompt records belong in [PROMPTS.md](./PROMPTS.md).
 
 ## Screenshot
 
-![cf_ai_edge_inspector live app](./docs/live-home.png)
+![cf_ai_edge_inspector live app](./docs/live-results-panel.png)
 
 Live demo: https://cf-ai-edge-inspector.zheng-jiaju.workers.dev
 
