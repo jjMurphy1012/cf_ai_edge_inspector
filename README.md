@@ -7,22 +7,22 @@
 
 In one sentence: this project is a chat-based website audit agent that runs on `Workers`, coordinates work with `Workflows`, stores results in `Durable Object` SQLite, and lets the user ask follow-up questions about saved audit history.
 
-## Assignment Snapshot
+## Project Snapshot
 
-This repository already covers the required assignment components:
+This repository includes the following core components:
 
-| Requirement | Implementation |
+| Capability | Implementation |
 | --- | --- |
 | `LLM` | `Workers AI` with `@cf/meta/llama-3.3-70b-instruct-fp8-fast` |
 | `Workflow / coordination` | `WebsiteAuditWorkflow` plus `AuditAgent` intent routing and live state sync |
 | `User input via chat or voice` | Chat UI over Agent WebSocket transport |
 | `Memory or state` | Durable Object synced state for live progress plus SQLite-backed audit history for saved results and follow-up answers |
 
-Hard requirements also covered in this repo:
+Repository details:
 
 - Repository name starts with `cf_ai_`
 - `README.md` includes local run instructions and deployed links
-- `PROMPTS.md` is included for AI prompt disclosure
+- `PROMPTS.md` records development-time AI prompts
 - Live deployment is available on Cloudflare Workers
 
 ## AI-Assisted Development
@@ -56,7 +56,7 @@ Shared demo room with a saved audit result:
 
 ## Why Cloudflare
 
-This project was built specifically for Cloudflare's AI app assignment and keeps the core runtime on Cloudflare:
+This project keeps the core runtime on Cloudflare:
 
 - `Workers` host the app and deployed link.
 - `Agents SDK` provides the stateful chat entry point.
@@ -64,9 +64,9 @@ This project was built specifically for Cloudflare's AI app assignment and keeps
 - `Workflows` run the multi-step audit.
 - `Workers AI` generates summaries and follow-up answers.
 
-## Assignment Coverage
+## Implementation Coverage
 
-| Requirement                    | Implementation                                                         | Files                                                                  |
+| Capability                     | Implementation                                                         | Files                                                                  |
 | ------------------------------ | ---------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | `LLM`                          | `Workers AI` with `@cf/meta/llama-3.3-70b-instruct-fp8-fast`           | [src/server.ts](./src/server.ts), [src/workflow.ts](./src/workflow.ts) |
 | `Workflow / coordination`      | `WebsiteAuditWorkflow` plus `AuditAgent` intent routing and state sync | [src/workflow.ts](./src/workflow.ts), [src/server.ts](./src/server.ts) |
@@ -182,5 +182,5 @@ Validated flows as of this version:
 - The audit only checks the homepage response. No recursive crawl, screenshotting, browser rendering, or vulnerability scanning.
 - Fetches use a fixed timeout and may classify origin blocking or rate limiting as a valid finding.
 - One `Workers AI` model currently handles both summary generation and follow-up answers.
-- The UI still contains some starter-era panels that are not essential to the assignment.
+- The UI still contains some starter-era panels that are not essential to the core audit workflow.
 - `Clear` is intentionally disabled while an audit is running, because clearing mid-workflow would create inconsistent state once the workflow completes.
