@@ -35,6 +35,12 @@ export interface AuditMetadata {
   metaDescription: string | null;
   redirected: boolean;
   responseTimeMs: number | null;
+  /** Optional to remain compatible with previously saved audits. */
+  summarySource?: "ai" | "rules";
+  summaryFallbackReason?: string | null;
+  redirectCount?: number;
+  htmlBytes?: number;
+  htmlTruncated?: boolean;
 }
 
 export interface AuditResult {

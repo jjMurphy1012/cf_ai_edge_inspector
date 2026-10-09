@@ -1,0 +1,916 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-09T20:59:54.463Z",
+  "completedAt": "2026-10-09T20:59:57.116Z",
+  "host": "127.0.0.1:5173",
+  "protocol": "ws",
+  "auditUrl": "https://example.com",
+  "deploymentLabel": "local-rules-working-tree",
+  "design": {
+    "sampleCount": 3,
+    "concurrency": 1,
+    "warmupRuns": 0,
+    "intervalBetweenRunsMs": 1000,
+    "isolatedRoomPerSample": true,
+    "originRequests": "One audit per sample; redirects may add HTTP requests. No recursive crawling or load test.",
+    "limits": "Small synthetic end-to-end demonstration. Not production SLA, uptime, load capacity, or proof of 25% improvement. No controlled before/after comparison."
+  },
+  "samples": [
+    {
+      "sample": 1,
+      "schemaVersion": 1,
+      "ok": true,
+      "startedAt": "2026-10-09T20:59:54.464Z",
+      "completedAt": "2026-10-09T20:59:54.857Z",
+      "host": "127.0.0.1:5173",
+      "protocol": "ws",
+      "room": "benchmark-d6c433c0-1b2b-481c-939a-7776a6c6b5f0",
+      "auditUrl": "https://example.com",
+      "deploymentLabel": "local-rules-working-tree",
+      "harnessSourceRevision": "f3e97c5bfda999c83c9e541d4749271af475da40",
+      "runtime": {
+        "node": "v23.11.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "measurement": "Client monotonic elapsed milliseconds; live WebSocket event receipt, not server CPU time or SLA.",
+      "progressStatusPollRequests": 0,
+      "metrics": {
+        "connectionReadyMs": 38.22,
+        "firstRunningStateMs": 2.63,
+        "initialChatFirstBodyMs": 5.43,
+        "initialChatDoneMs": 5.81,
+        "auditCompleteMs": 203.42,
+        "serverAuditWallMs": 190,
+        "originResponseMs": 86,
+        "reconnectRecoveryMs": 29.02,
+        "followUpFirstBodyMs": 10.48,
+        "followUpDoneMs": 11.62,
+        "clearAndVerifyMs": 55.76,
+        "validationTotalMs": 392.2
+      },
+      "checks": {
+        "workflowCompleted": true,
+        "websocketProgress": true,
+        "clearRejectedWhileRunning": true,
+        "duplicateStartRejectedWhileRunning": true,
+        "chatTranscriptPersisted": true,
+        "freshConnectionRecoversAuditAndChat": true,
+        "followUpTextAndSameRun": true,
+        "clearPersistsAcrossNewConnection": true
+      },
+      "connections": [
+        {
+          "label": "initial",
+          "opened": true,
+          "errors": 0,
+          "closed": true,
+          "closeCode": 1000
+        },
+        {
+          "label": "reconnect",
+          "opened": true,
+          "errors": 0,
+          "closed": true,
+          "closeCode": 1000
+        },
+        {
+          "label": "after-clear",
+          "opened": true,
+          "errors": 0,
+          "closed": true,
+          "closeCode": 1000
+        }
+      ],
+      "stateTransitions": [
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:54.502Z",
+          "atMs": 38.07,
+          "sinceDispatchMs": null,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:54.520Z",
+          "atMs": 55.28,
+          "sinceDispatchMs": 2.62,
+          "runState": "running",
+          "phase": "validating",
+          "progress": 5,
+          "activeRunId": "566a7a66-2acf-4b8c-9626-ad92f2894987",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:54.528Z",
+          "atMs": 63.95,
+          "sinceDispatchMs": 11.29,
+          "runState": "running",
+          "phase": "validating",
+          "progress": 5,
+          "activeRunId": "566a7a66-2acf-4b8c-9626-ad92f2894987",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:54.531Z",
+          "atMs": 66.14,
+          "sinceDispatchMs": 13.49,
+          "runState": "running",
+          "phase": "fetching",
+          "progress": 25,
+          "activeRunId": "566a7a66-2acf-4b8c-9626-ad92f2894987",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:54.663Z",
+          "atMs": 198.82,
+          "sinceDispatchMs": 146.18,
+          "runState": "running",
+          "phase": "inspecting",
+          "progress": 55,
+          "activeRunId": "566a7a66-2acf-4b8c-9626-ad92f2894987",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:54.699Z",
+          "atMs": 234.97,
+          "sinceDispatchMs": 182.32,
+          "runState": "running",
+          "phase": "summarizing",
+          "progress": 80,
+          "activeRunId": "566a7a66-2acf-4b8c-9626-ad92f2894987",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:54.714Z",
+          "atMs": 249.65,
+          "sinceDispatchMs": 197,
+          "runState": "running",
+          "phase": "persisting",
+          "progress": 95,
+          "activeRunId": "566a7a66-2acf-4b8c-9626-ad92f2894987",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:54.720Z",
+          "atMs": 256.05,
+          "sinceDispatchMs": 203.41,
+          "runState": "complete",
+          "phase": "done",
+          "progress": 100,
+          "activeRunId": null,
+          "lastCompletedRunId": "566a7a66-2acf-4b8c-9626-ad92f2894987"
+        },
+        {
+          "connection": "reconnect",
+          "at": "2026-10-09T20:59:54.753Z",
+          "atMs": 288.92,
+          "sinceDispatchMs": 236.26,
+          "runState": "complete",
+          "phase": "done",
+          "progress": 100,
+          "activeRunId": null,
+          "lastCompletedRunId": "566a7a66-2acf-4b8c-9626-ad92f2894987"
+        },
+        {
+          "connection": "reconnect",
+          "at": "2026-10-09T20:59:54.803Z",
+          "atMs": 338.38,
+          "sinceDispatchMs": 285.74,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "after-clear",
+          "at": "2026-10-09T20:59:54.849Z",
+          "atMs": 384.82,
+          "sinceDispatchMs": 332.16,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        }
+      ],
+      "result": {
+        "runId": "566a7a66-2acf-4b8c-9626-ad92f2894987",
+        "url": "https://example.com",
+        "normalizedUrl": "https://example.com/",
+        "status": "partial",
+        "summary": "The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header.",
+        "recommendations": [
+          "Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced.",
+          "Define a baseline Content-Security-Policy that limits script, frame, and object sources.",
+          "Add explicit Cache-Control directives so browsers and edge caches know how to treat the response."
+        ],
+        "findings": [
+          {
+            "id": "missing-hsts",
+            "severity": "medium",
+            "title": "Missing Strict-Transport-Security header",
+            "details": "Without HSTS, browsers may continue to use insecure transport for future visits.",
+            "recommendation": "Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced."
+          },
+          {
+            "id": "missing-csp",
+            "severity": "medium",
+            "title": "Missing Content-Security-Policy header",
+            "details": "A missing CSP reduces protection against script injection and unsafe third-party content.",
+            "recommendation": "Define a baseline Content-Security-Policy that limits script, frame, and object sources."
+          },
+          {
+            "id": "missing-x-frame-options",
+            "severity": "low",
+            "title": "Missing X-Frame-Options header",
+            "details": "This makes it easier for other sites to embed the page in an iframe.",
+            "recommendation": "Add X-Frame-Options or an equivalent frame-ancestors CSP directive."
+          },
+          {
+            "id": "missing-x-content-type-options",
+            "severity": "low",
+            "title": "Missing X-Content-Type-Options header",
+            "details": "Browsers may try to MIME-sniff content when this header is absent.",
+            "recommendation": "Return X-Content-Type-Options: nosniff for public responses."
+          },
+          {
+            "id": "missing-referrer-policy",
+            "severity": "low",
+            "title": "Missing Referrer-Policy header",
+            "details": "The browser may leak more referrer information than intended on cross-site navigation.",
+            "recommendation": "Set a Referrer-Policy such as strict-origin-when-cross-origin."
+          },
+          {
+            "id": "missing-cache-control",
+            "severity": "medium",
+            "title": "Missing Cache-Control header",
+            "details": "No cache directive was detected on the homepage response.",
+            "recommendation": "Add explicit Cache-Control directives so browsers and edge caches know how to treat the response."
+          },
+          {
+            "id": "missing-meta-description",
+            "severity": "info",
+            "title": "Missing meta description",
+            "details": "No meta description was found in the fetched homepage HTML.",
+            "recommendation": "Add a concise meta description to improve how the page is summarized externally."
+          }
+        ],
+        "metadata": {
+          "finalUrl": "https://example.com/",
+          "statusCode": 200,
+          "contentType": "text/html; charset=utf-8",
+          "title": "Example Domain",
+          "metaDescription": null,
+          "redirected": false,
+          "responseTimeMs": 86,
+          "redirectCount": 0,
+          "htmlBytes": 577,
+          "htmlTruncated": false,
+          "summarySource": "rules",
+          "summaryFallbackReason": "rules-only"
+        },
+        "startedAt": "2026-10-09T20:59:54.519Z",
+        "completedAt": "2026-10-09T20:59:54.709Z"
+      },
+      "cleanup": {
+        "requested": true,
+        "verified": true
+      },
+      "dispatchedAt": "2026-10-09T20:59:54.517Z",
+      "runningClearGuard": {
+        "passed": true,
+        "error": "Cannot clear the session while an audit is running."
+      },
+      "duplicateStartGuard": {
+        "passed": true,
+        "error": "An audit is already running."
+      },
+      "followUpPreview": "Based on the saved audit of https://example.com/: The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header. First recommended action: Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced. This answer uses the saved rule results and does not run a new scan."
+    },
+    {
+      "sample": 2,
+      "schemaVersion": 1,
+      "ok": true,
+      "startedAt": "2026-10-09T20:59:55.862Z",
+      "completedAt": "2026-10-09T20:59:55.981Z",
+      "host": "127.0.0.1:5173",
+      "protocol": "ws",
+      "room": "benchmark-91d0b994-dd10-4e08-b50e-738291eb63f2",
+      "auditUrl": "https://example.com",
+      "deploymentLabel": "local-rules-working-tree",
+      "harnessSourceRevision": "f3e97c5bfda999c83c9e541d4749271af475da40",
+      "runtime": {
+        "node": "v23.11.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "measurement": "Client monotonic elapsed milliseconds; live WebSocket event receipt, not server CPU time or SLA.",
+      "progressStatusPollRequests": 0,
+      "metrics": {
+        "connectionReadyMs": 30,
+        "firstRunningStateMs": 1.46,
+        "initialChatFirstBodyMs": 3.64,
+        "initialChatDoneMs": 3.79,
+        "auditCompleteMs": 42.62,
+        "serverAuditWallMs": 38,
+        "originResponseMs": 25,
+        "reconnectRecoveryMs": 9.58,
+        "followUpFirstBodyMs": 4.67,
+        "followUpDoneMs": 4.75,
+        "clearAndVerifyMs": 15.81,
+        "validationTotalMs": 119.61
+      },
+      "checks": {
+        "workflowCompleted": true,
+        "websocketProgress": true,
+        "clearRejectedWhileRunning": true,
+        "duplicateStartRejectedWhileRunning": true,
+        "chatTranscriptPersisted": true,
+        "freshConnectionRecoversAuditAndChat": true,
+        "followUpTextAndSameRun": true,
+        "clearPersistsAcrossNewConnection": true
+      },
+      "connections": [
+        {
+          "label": "initial",
+          "opened": true,
+          "errors": 0,
+          "closed": true,
+          "closeCode": 1000
+        },
+        {
+          "label": "reconnect",
+          "opened": true,
+          "errors": 0,
+          "closed": true,
+          "closeCode": 1000
+        },
+        {
+          "label": "after-clear",
+          "opened": true,
+          "errors": 0,
+          "closed": true,
+          "closeCode": 1000
+        }
+      ],
+      "stateTransitions": [
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:55.892Z",
+          "atMs": 29.9,
+          "sinceDispatchMs": null,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:55.899Z",
+          "atMs": 37.21,
+          "sinceDispatchMs": 1.46,
+          "runState": "running",
+          "phase": "validating",
+          "progress": 5,
+          "activeRunId": "9071534c-cadb-4ea9-82eb-0d7463c0ef2d",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:55.904Z",
+          "atMs": 42.68,
+          "sinceDispatchMs": 6.94,
+          "runState": "running",
+          "phase": "validating",
+          "progress": 5,
+          "activeRunId": "9071534c-cadb-4ea9-82eb-0d7463c0ef2d",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:55.907Z",
+          "atMs": 44.7,
+          "sinceDispatchMs": 8.95,
+          "runState": "running",
+          "phase": "fetching",
+          "progress": 25,
+          "activeRunId": "9071534c-cadb-4ea9-82eb-0d7463c0ef2d",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:55.935Z",
+          "atMs": 72.69,
+          "sinceDispatchMs": 36.95,
+          "runState": "running",
+          "phase": "inspecting",
+          "progress": 55,
+          "activeRunId": "9071534c-cadb-4ea9-82eb-0d7463c0ef2d",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:55.936Z",
+          "atMs": 74.48,
+          "sinceDispatchMs": 38.73,
+          "runState": "running",
+          "phase": "summarizing",
+          "progress": 80,
+          "activeRunId": "9071534c-cadb-4ea9-82eb-0d7463c0ef2d",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:55.939Z",
+          "atMs": 76.81,
+          "sinceDispatchMs": 41.06,
+          "runState": "running",
+          "phase": "persisting",
+          "progress": 95,
+          "activeRunId": "9071534c-cadb-4ea9-82eb-0d7463c0ef2d",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:55.940Z",
+          "atMs": 78.37,
+          "sinceDispatchMs": 42.62,
+          "runState": "complete",
+          "phase": "done",
+          "progress": 100,
+          "activeRunId": null,
+          "lastCompletedRunId": "9071534c-cadb-4ea9-82eb-0d7463c0ef2d"
+        },
+        {
+          "connection": "reconnect",
+          "at": "2026-10-09T20:59:55.950Z",
+          "atMs": 88.24,
+          "sinceDispatchMs": 52.5,
+          "runState": "complete",
+          "phase": "done",
+          "progress": 100,
+          "activeRunId": null,
+          "lastCompletedRunId": "9071534c-cadb-4ea9-82eb-0d7463c0ef2d"
+        },
+        {
+          "connection": "reconnect",
+          "at": "2026-10-09T20:59:55.966Z",
+          "atMs": 104.6,
+          "sinceDispatchMs": 68.86,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "after-clear",
+          "at": "2026-10-09T20:59:55.977Z",
+          "atMs": 115.05,
+          "sinceDispatchMs": 79.31,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        }
+      ],
+      "result": {
+        "runId": "9071534c-cadb-4ea9-82eb-0d7463c0ef2d",
+        "url": "https://example.com",
+        "normalizedUrl": "https://example.com/",
+        "status": "partial",
+        "summary": "The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header.",
+        "recommendations": [
+          "Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced.",
+          "Define a baseline Content-Security-Policy that limits script, frame, and object sources.",
+          "Add explicit Cache-Control directives so browsers and edge caches know how to treat the response."
+        ],
+        "findings": [
+          {
+            "id": "missing-hsts",
+            "severity": "medium",
+            "title": "Missing Strict-Transport-Security header",
+            "details": "Without HSTS, browsers may continue to use insecure transport for future visits.",
+            "recommendation": "Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced."
+          },
+          {
+            "id": "missing-csp",
+            "severity": "medium",
+            "title": "Missing Content-Security-Policy header",
+            "details": "A missing CSP reduces protection against script injection and unsafe third-party content.",
+            "recommendation": "Define a baseline Content-Security-Policy that limits script, frame, and object sources."
+          },
+          {
+            "id": "missing-x-frame-options",
+            "severity": "low",
+            "title": "Missing X-Frame-Options header",
+            "details": "This makes it easier for other sites to embed the page in an iframe.",
+            "recommendation": "Add X-Frame-Options or an equivalent frame-ancestors CSP directive."
+          },
+          {
+            "id": "missing-x-content-type-options",
+            "severity": "low",
+            "title": "Missing X-Content-Type-Options header",
+            "details": "Browsers may try to MIME-sniff content when this header is absent.",
+            "recommendation": "Return X-Content-Type-Options: nosniff for public responses."
+          },
+          {
+            "id": "missing-referrer-policy",
+            "severity": "low",
+            "title": "Missing Referrer-Policy header",
+            "details": "The browser may leak more referrer information than intended on cross-site navigation.",
+            "recommendation": "Set a Referrer-Policy such as strict-origin-when-cross-origin."
+          },
+          {
+            "id": "missing-cache-control",
+            "severity": "medium",
+            "title": "Missing Cache-Control header",
+            "details": "No cache directive was detected on the homepage response.",
+            "recommendation": "Add explicit Cache-Control directives so browsers and edge caches know how to treat the response."
+          },
+          {
+            "id": "missing-meta-description",
+            "severity": "info",
+            "title": "Missing meta description",
+            "details": "No meta description was found in the fetched homepage HTML.",
+            "recommendation": "Add a concise meta description to improve how the page is summarized externally."
+          }
+        ],
+        "metadata": {
+          "finalUrl": "https://example.com/",
+          "statusCode": 200,
+          "contentType": "text/html; charset=utf-8",
+          "title": "Example Domain",
+          "metaDescription": null,
+          "redirected": false,
+          "responseTimeMs": 25,
+          "redirectCount": 0,
+          "htmlBytes": 577,
+          "htmlTruncated": false,
+          "summarySource": "rules",
+          "summaryFallbackReason": "rules-only"
+        },
+        "startedAt": "2026-10-09T20:59:55.899Z",
+        "completedAt": "2026-10-09T20:59:55.937Z"
+      },
+      "cleanup": {
+        "requested": true,
+        "verified": true
+      },
+      "dispatchedAt": "2026-10-09T20:59:55.898Z",
+      "runningClearGuard": {
+        "passed": true,
+        "error": "Cannot clear the session while an audit is running."
+      },
+      "duplicateStartGuard": {
+        "passed": true,
+        "error": "An audit is already running."
+      },
+      "followUpPreview": "Based on the saved audit of https://example.com/: The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header. First recommended action: Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced. This answer uses the saved rule results and does not run a new scan."
+    },
+    {
+      "sample": 3,
+      "schemaVersion": 1,
+      "ok": true,
+      "startedAt": "2026-10-09T20:59:56.983Z",
+      "completedAt": "2026-10-09T20:59:57.115Z",
+      "host": "127.0.0.1:5173",
+      "protocol": "ws",
+      "room": "benchmark-e33f5110-7a25-4d3a-9b2c-bdca6dececc8",
+      "auditUrl": "https://example.com",
+      "deploymentLabel": "local-rules-working-tree",
+      "harnessSourceRevision": "f3e97c5bfda999c83c9e541d4749271af475da40",
+      "runtime": {
+        "node": "v23.11.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "measurement": "Client monotonic elapsed milliseconds; live WebSocket event receipt, not server CPU time or SLA.",
+      "progressStatusPollRequests": 0,
+      "metrics": {
+        "connectionReadyMs": 34.34,
+        "firstRunningStateMs": 2.07,
+        "initialChatFirstBodyMs": 6.34,
+        "initialChatDoneMs": 6.5,
+        "auditCompleteMs": 48.25,
+        "serverAuditWallMs": 44,
+        "originResponseMs": 26,
+        "reconnectRecoveryMs": 11.23,
+        "followUpFirstBodyMs": 3.29,
+        "followUpDoneMs": 3.35,
+        "clearAndVerifyMs": 15.88,
+        "validationTotalMs": 131.53
+      },
+      "checks": {
+        "workflowCompleted": true,
+        "websocketProgress": true,
+        "clearRejectedWhileRunning": true,
+        "duplicateStartRejectedWhileRunning": true,
+        "chatTranscriptPersisted": true,
+        "freshConnectionRecoversAuditAndChat": true,
+        "followUpTextAndSameRun": true,
+        "clearPersistsAcrossNewConnection": true
+      },
+      "connections": [
+        {
+          "label": "initial",
+          "opened": true,
+          "errors": 0,
+          "closed": true,
+          "closeCode": 1000
+        },
+        {
+          "label": "reconnect",
+          "opened": true,
+          "errors": 0,
+          "closed": true,
+          "closeCode": 1000
+        },
+        {
+          "label": "after-clear",
+          "opened": true,
+          "errors": 0,
+          "closed": true,
+          "closeCode": 1000
+        }
+      ],
+      "stateTransitions": [
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:57.018Z",
+          "atMs": 34.31,
+          "sinceDispatchMs": null,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:57.025Z",
+          "atMs": 41.73,
+          "sinceDispatchMs": 2.07,
+          "runState": "running",
+          "phase": "validating",
+          "progress": 5,
+          "activeRunId": "0543944a-ed0a-4cde-846d-851468a73d31",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:57.033Z",
+          "atMs": 49.84,
+          "sinceDispatchMs": 10.19,
+          "runState": "running",
+          "phase": "validating",
+          "progress": 5,
+          "activeRunId": "0543944a-ed0a-4cde-846d-851468a73d31",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:57.035Z",
+          "atMs": 51.75,
+          "sinceDispatchMs": 12.09,
+          "runState": "running",
+          "phase": "fetching",
+          "progress": 25,
+          "activeRunId": "0543944a-ed0a-4cde-846d-851468a73d31",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:57.064Z",
+          "atMs": 81,
+          "sinceDispatchMs": 41.35,
+          "runState": "running",
+          "phase": "inspecting",
+          "progress": 55,
+          "activeRunId": "0543944a-ed0a-4cde-846d-851468a73d31",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:57.067Z",
+          "atMs": 83.2,
+          "sinceDispatchMs": 43.54,
+          "runState": "running",
+          "phase": "summarizing",
+          "progress": 80,
+          "activeRunId": "0543944a-ed0a-4cde-846d-851468a73d31",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:57.069Z",
+          "atMs": 85.61,
+          "sinceDispatchMs": 45.96,
+          "runState": "running",
+          "phase": "persisting",
+          "progress": 95,
+          "activeRunId": "0543944a-ed0a-4cde-846d-851468a73d31",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T20:59:57.071Z",
+          "atMs": 87.9,
+          "sinceDispatchMs": 48.25,
+          "runState": "complete",
+          "phase": "done",
+          "progress": 100,
+          "activeRunId": null,
+          "lastCompletedRunId": "0543944a-ed0a-4cde-846d-851468a73d31"
+        },
+        {
+          "connection": "reconnect",
+          "at": "2026-10-09T20:59:57.085Z",
+          "atMs": 102.07,
+          "sinceDispatchMs": 62.42,
+          "runState": "complete",
+          "phase": "done",
+          "progress": 100,
+          "activeRunId": null,
+          "lastCompletedRunId": "0543944a-ed0a-4cde-846d-851468a73d31"
+        },
+        {
+          "connection": "reconnect",
+          "at": "2026-10-09T20:59:57.100Z",
+          "atMs": 116.56,
+          "sinceDispatchMs": 76.91,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "after-clear",
+          "at": "2026-10-09T20:59:57.110Z",
+          "atMs": 126.81,
+          "sinceDispatchMs": 87.16,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        }
+      ],
+      "result": {
+        "runId": "0543944a-ed0a-4cde-846d-851468a73d31",
+        "url": "https://example.com",
+        "normalizedUrl": "https://example.com/",
+        "status": "partial",
+        "summary": "The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header.",
+        "recommendations": [
+          "Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced.",
+          "Define a baseline Content-Security-Policy that limits script, frame, and object sources.",
+          "Add explicit Cache-Control directives so browsers and edge caches know how to treat the response."
+        ],
+        "findings": [
+          {
+            "id": "missing-hsts",
+            "severity": "medium",
+            "title": "Missing Strict-Transport-Security header",
+            "details": "Without HSTS, browsers may continue to use insecure transport for future visits.",
+            "recommendation": "Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced."
+          },
+          {
+            "id": "missing-csp",
+            "severity": "medium",
+            "title": "Missing Content-Security-Policy header",
+            "details": "A missing CSP reduces protection against script injection and unsafe third-party content.",
+            "recommendation": "Define a baseline Content-Security-Policy that limits script, frame, and object sources."
+          },
+          {
+            "id": "missing-x-frame-options",
+            "severity": "low",
+            "title": "Missing X-Frame-Options header",
+            "details": "This makes it easier for other sites to embed the page in an iframe.",
+            "recommendation": "Add X-Frame-Options or an equivalent frame-ancestors CSP directive."
+          },
+          {
+            "id": "missing-x-content-type-options",
+            "severity": "low",
+            "title": "Missing X-Content-Type-Options header",
+            "details": "Browsers may try to MIME-sniff content when this header is absent.",
+            "recommendation": "Return X-Content-Type-Options: nosniff for public responses."
+          },
+          {
+            "id": "missing-referrer-policy",
+            "severity": "low",
+            "title": "Missing Referrer-Policy header",
+            "details": "The browser may leak more referrer information than intended on cross-site navigation.",
+            "recommendation": "Set a Referrer-Policy such as strict-origin-when-cross-origin."
+          },
+          {
+            "id": "missing-cache-control",
+            "severity": "medium",
+            "title": "Missing Cache-Control header",
+            "details": "No cache directive was detected on the homepage response.",
+            "recommendation": "Add explicit Cache-Control directives so browsers and edge caches know how to treat the response."
+          },
+          {
+            "id": "missing-meta-description",
+            "severity": "info",
+            "title": "Missing meta description",
+            "details": "No meta description was found in the fetched homepage HTML.",
+            "recommendation": "Add a concise meta description to improve how the page is summarized externally."
+          }
+        ],
+        "metadata": {
+          "finalUrl": "https://example.com/",
+          "statusCode": 200,
+          "contentType": "text/html; charset=utf-8",
+          "title": "Example Domain",
+          "metaDescription": null,
+          "redirected": false,
+          "responseTimeMs": 26,
+          "redirectCount": 0,
+          "htmlBytes": 577,
+          "htmlTruncated": false,
+          "summarySource": "rules",
+          "summaryFallbackReason": "rules-only"
+        },
+        "startedAt": "2026-10-09T20:59:57.024Z",
+        "completedAt": "2026-10-09T20:59:57.068Z"
+      },
+      "cleanup": {
+        "requested": true,
+        "verified": true
+      },
+      "dispatchedAt": "2026-10-09T20:59:57.023Z",
+      "runningClearGuard": {
+        "passed": true,
+        "error": "Cannot clear the session while an audit is running."
+      },
+      "duplicateStartGuard": {
+        "passed": true,
+        "error": "An audit is already running."
+      },
+      "followUpPreview": "Based on the saved audit of https://example.com/: The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header. First recommended action: Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced. This answer uses the saved rule results and does not run a new scan."
+    }
+  ],
+  "summary": {
+    "attempted": 3,
+    "validationPassed": 3,
+    "validationFailed": 0,
+    "observedValidationPassRate": 1,
+    "workflowCompleted": 3,
+    "auditStatusCounts": {
+      "partial": 3
+    },
+    "percentiles": "Nearest rank: sort samples; x[ceil(p*n)-1]. At n=3, p95 is the maximum, not a stable tail-latency estimate.",
+    "latencyPopulation": "All completed audits, including audits whose later follow-up/reconnect/cleanup validation failed. Uncompleted/timeouts remain in samples and failure counts; no latency is fabricated for them.",
+    "auditCompleteMs": {
+      "n": 3,
+      "min": 42.62,
+      "median": 48.25,
+      "p95": 203.42,
+      "max": 203.42
+    },
+    "firstRunningStateMs": {
+      "n": 3,
+      "min": 1.46,
+      "median": 2.07,
+      "p95": 2.63,
+      "max": 2.63
+    },
+    "serverAuditWallMs": {
+      "n": 3,
+      "min": 38,
+      "median": 44,
+      "p95": 190,
+      "max": 190
+    },
+    "originResponseMs": {
+      "n": 3,
+      "min": 25,
+      "median": 26,
+      "p95": 86,
+      "max": 86
+    },
+    "reconnectRecoveryMs": {
+      "n": 3,
+      "min": 9.58,
+      "median": 11.23,
+      "p95": 29.02,
+      "max": 29.02
+    }
+  }
+}

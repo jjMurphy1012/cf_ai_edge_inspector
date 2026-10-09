@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "startedAt": "2026-10-09T21:02:17.669Z",
+  "completedAt": "2026-10-09T21:02:25.846Z",
+  "host": "cf-ai-edge-inspector.zheng-jiaju.workers.dev",
+  "protocol": "wss",
+  "room": "validation-5bcc7f92-1d02-4a1a-829a-df32e1b60491",
+  "auditUrl": "http://",
+  "deploymentLabel": "baseline-existing-live-revision-not-verified",
+  "harnessSourceRevision": "f3e97c5bfda999c83c9e541d4749271af475da40",
+  "runtime": {
+    "node": "v23.11.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "measurement": "Client monotonic elapsed milliseconds; live WebSocket event receipt, not server CPU time or SLA.",
+  "progressStatusPollRequests": 0,
+  "metrics": {
+    "connectionReadyMs": 635.87,
+    "firstRunningStateMs": 842.41,
+    "initialChatFirstBodyMs": 842.65,
+    "initialChatDoneMs": 3860.97,
+    "auditCompleteMs": 4902.53,
+    "serverAuditWallMs": 4719,
+    "originResponseMs": null,
+    "reconnectRecoveryMs": 424.61,
+    "followUpFirstBodyMs": 57.69,
+    "followUpDoneMs": 1255.56,
+    "clearAndVerifyMs": 344.76,
+    "validationTotalMs": 8177.18
+  },
+  "checks": {
+    "expectedAuditStatus": true,
+    "workflowCompleted": true,
+    "websocketProgress": true,
+    "clearRejectedWhileRunning": "skipped",
+    "chatTranscriptPersisted": true,
+    "freshConnectionRecoversAuditAndChat": true,
+    "followUpTextAndSameRun": true,
+    "clearPersistsAcrossNewConnection": true
+  },
+  "connections": [
+    {
+      "label": "initial",
+      "opened": true,
+      "errors": 0,
+      "closed": false
+    },
+    {
+      "label": "reconnect",
+      "opened": true,
+      "errors": 0,
+      "closed": false
+    },
+    {
+      "label": "after-clear",
+      "opened": true,
+      "errors": 0,
+      "closed": false
+    }
+  ],
+  "stateTransitions": [
+    {
+      "connection": "initial",
+      "at": "2026-10-09T21:02:18.305Z",
+      "atMs": 635.6,
+      "sinceDispatchMs": null,
+      "runState": "idle",
+      "phase": "idle",
+      "progress": 0,
+      "activeRunId": null,
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T21:02:19.551Z",
+      "atMs": 1882.14,
+      "sinceDispatchMs": 842.41,
+      "runState": "running",
+      "phase": "validating",
+      "progress": 5,
+      "activeRunId": "k3uJBnejYurr9JH4M1Sks",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T21:02:23.422Z",
+      "atMs": 5752.8,
+      "sinceDispatchMs": 4713.06,
+      "runState": "running",
+      "phase": "validating",
+      "progress": 5,
+      "activeRunId": "k3uJBnejYurr9JH4M1Sks",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T21:02:23.537Z",
+      "atMs": 5867.63,
+      "sinceDispatchMs": 4827.92,
+      "runState": "running",
+      "phase": "done",
+      "progress": 100,
+      "activeRunId": "k3uJBnejYurr9JH4M1Sks",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T21:02:23.611Z",
+      "atMs": 5942.24,
+      "sinceDispatchMs": 4902.52,
+      "runState": "complete",
+      "phase": "done",
+      "progress": 100,
+      "activeRunId": null,
+      "lastCompletedRunId": "k3uJBnejYurr9JH4M1Sks"
+    },
+    {
+      "connection": "reconnect",
+      "at": "2026-10-09T21:02:24.097Z",
+      "atMs": 6428.24,
+      "sinceDispatchMs": 5388.52,
+      "runState": "complete",
+      "phase": "done",
+      "progress": 100,
+      "activeRunId": null,
+      "lastCompletedRunId": "k3uJBnejYurr9JH4M1Sks"
+    },
+    {
+      "connection": "reconnect",
+      "at": "2026-10-09T21:02:25.553Z",
+      "atMs": 7883.77,
+      "sinceDispatchMs": 6844.06,
+      "runState": "idle",
+      "phase": "idle",
+      "progress": 0,
+      "activeRunId": null,
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "after-clear",
+      "at": "2026-10-09T21:02:25.757Z",
+      "atMs": 8087.55,
+      "sinceDispatchMs": 7047.83,
+      "runState": "idle",
+      "phase": "idle",
+      "progress": 0,
+      "activeRunId": null,
+      "lastCompletedRunId": null
+    }
+  ],
+  "result": {
+    "runId": "k3uJBnejYurr9JH4M1Sks",
+    "url": "http://",
+    "normalizedUrl": null,
+    "status": "invalid_url",
+    "summary": "The submitted URL could not be audited because it was invalid.",
+    "recommendations": [
+      "Submit a full public URL or bare domain that resolves over HTTP or HTTPS."
+    ],
+    "findings": [
+      {
+        "id": "invalid-url",
+        "severity": "high",
+        "title": "Invalid URL input",
+        "details": "The URL could not be parsed.",
+        "recommendation": "Use a public http or https URL. If the user pasted a bare hostname, try the https version first."
+      }
+    ],
+    "metadata": {
+      "finalUrl": null,
+      "statusCode": null,
+      "contentType": null,
+      "title": null,
+      "metaDescription": null,
+      "redirected": false,
+      "responseTimeMs": null
+    },
+    "startedAt": "2026-10-09T21:02:18.823Z",
+    "completedAt": "2026-10-09T21:02:23.542Z"
+  },
+  "cleanup": {
+    "requested": true,
+    "verified": true
+  },
+  "dispatchedAt": "2026-10-09T21:02:18.709Z",
+  "followUpPreview": "FixFix the invalid the invalid URL input by URL input by submitting submitting a full public a full public URL or bare URL or bare domain that resolves domain that resolves over HTTP or over HTTP or HTTPS. The HTTPS. The current URL \" current URL \"http://\" ishttp://\" is not valid and not valid and cannot cannot be aud be audited. Noited. No other other issues can issues can be addressed be addressed until until a a valid URL is valid URL is provided. provided."
+}

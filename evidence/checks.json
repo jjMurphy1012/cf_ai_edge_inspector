@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-09T21:08:00.355Z",
+  "environment": {
+    "node": "v22.19.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "checks": {
+    "npmCi": true,
+    "format": true,
+    "lint": true,
+    "typescript": true,
+    "unitTests": {
+      "passed": 64,
+      "failed": 0,
+      "groups": {
+        "auditCore": 32,
+        "chatRouting": 22,
+        "aiStreaming": 6,
+        "measurement": 4
+      }
+    },
+    "productionBuild": true
+  },
+  "limits": [
+    "Production build still warns about a client chunk above 500 kB.",
+    "Workers AI integration and deployment of this branch were not executed because Wrangler authentication has expired.",
+    "Dependency findings remain; see dependency-audit-summary.json."
+  ],
+  "evidenceSource": "Actual command results recorded during this working-tree validation, not remote deployment verification."
+}

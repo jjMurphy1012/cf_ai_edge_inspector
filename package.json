@@ -14,11 +14,15 @@
     "dev": "vite dev",
     "start": "vite dev",
     "deploy": "vite build && wrangler deploy",
-    "types": "wrangler types env.d.ts --include-runtime false",
+    "types": "wrangler types env.d.ts --include-runtime false --strict-vars false",
     "format": "oxfmt --write .",
     "lint": "oxlint src/",
     "check": "oxfmt --check . && oxlint src/ && tsc",
-    "check:live": "node scripts/validate-live.mjs"
+    "check:live": "node scripts/validate-live.mjs",
+    "dev:demo": "vite dev --mode rules --host 127.0.0.1",
+    "build": "vite build",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "benchmark:live": "node scripts/benchmark.mjs"
   },
   "dependencies": {
     "@cloudflare/ai-chat": "^0.4.1",
@@ -48,6 +52,10 @@
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.2",
     "vite": "^8.0.8",
-    "wrangler": "^4.82.2"
+    "wrangler": "^4.82.2",
+    "ws": "^8.22.0"
+  },
+  "engines": {
+    "node": ">=22.19.0"
   }
 }

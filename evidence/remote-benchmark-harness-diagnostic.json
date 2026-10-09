@@ -1,0 +1,619 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-09T21:02:48.909Z",
+  "completedAt": "2026-10-09T21:02:54.897Z",
+  "host": "cf-ai-edge-inspector.zheng-jiaju.workers.dev",
+  "protocol": "wss",
+  "auditUrl": "http://",
+  "deploymentLabel": "baseline-existing-live-revision-not-verified",
+  "design": {
+    "sampleCount": 1,
+    "concurrency": 1,
+    "warmupRuns": 0,
+    "intervalBetweenRunsMs": 1000,
+    "isolatedRoomPerSample": true,
+    "originRequests": "One audit per sample; redirects may add HTTP requests. No recursive crawling or load test.",
+    "limits": "Small synthetic end-to-end demonstration. Not production SLA, uptime, load capacity, or proof of 25% improvement. No controlled before/after comparison."
+  },
+  "samples": [
+    {
+      "sample": 1,
+      "schemaVersion": 1,
+      "ok": true,
+      "startedAt": "2026-10-09T21:02:48.912Z",
+      "completedAt": "2026-10-09T21:02:54.895Z",
+      "host": "cf-ai-edge-inspector.zheng-jiaju.workers.dev",
+      "protocol": "wss",
+      "room": "benchmark-ec67025e-d56e-4e6a-b6df-5a89573de309",
+      "auditUrl": "http://",
+      "deploymentLabel": "baseline-existing-live-revision-not-verified",
+      "harnessSourceRevision": "f3e97c5bfda999c83c9e541d4749271af475da40",
+      "runtime": {
+        "node": "v23.11.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "measurement": "Client monotonic elapsed milliseconds; live WebSocket event receipt, not server CPU time or SLA.",
+      "progressStatusPollRequests": 0,
+      "metrics": {
+        "connectionReadyMs": 640.28,
+        "firstRunningStateMs": 980.73,
+        "initialChatFirstBodyMs": 981.03,
+        "auditCompleteMs": 1708.09,
+        "initialChatDoneMs": 2226.69,
+        "serverAuditWallMs": 1471,
+        "originResponseMs": null,
+        "reconnectRecoveryMs": 761.17,
+        "followUpFirstBodyMs": 45.84,
+        "followUpDoneMs": 1245.51,
+        "clearAndVerifyMs": 539.67,
+        "validationTotalMs": 5982.58
+      },
+      "checks": {
+        "expectedAuditStatus": true,
+        "workflowCompleted": true,
+        "websocketProgress": true,
+        "clearRejectedWhileRunning": "skipped",
+        "chatTranscriptPersisted": true,
+        "freshConnectionRecoversAuditAndChat": true,
+        "followUpTextAndSameRun": true,
+        "clearPersistsAcrossNewConnection": true
+      },
+      "connections": [
+        {
+          "label": "initial",
+          "opened": true,
+          "errors": 0,
+          "closed": false
+        },
+        {
+          "label": "reconnect",
+          "opened": true,
+          "errors": 0,
+          "closed": false
+        },
+        {
+          "label": "after-clear",
+          "opened": true,
+          "errors": 0,
+          "closed": false
+        }
+      ],
+      "stateTransitions": [
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:49.552Z",
+          "atMs": 640.2,
+          "sinceDispatchMs": null,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:50.917Z",
+          "atMs": 2004.89,
+          "sinceDispatchMs": 980.72,
+          "runState": "running",
+          "phase": "validating",
+          "progress": 5,
+          "activeRunId": "_SrN0e7D1aGvj8BV-JiRS",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.403Z",
+          "atMs": 2491.14,
+          "sinceDispatchMs": 1467.01,
+          "runState": "running",
+          "phase": "validating",
+          "progress": 5,
+          "activeRunId": "_SrN0e7D1aGvj8BV-JiRS",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.524Z",
+          "atMs": 2612.04,
+          "sinceDispatchMs": 1587.89,
+          "runState": "running",
+          "phase": "done",
+          "progress": 100,
+          "activeRunId": "_SrN0e7D1aGvj8BV-JiRS",
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.644Z",
+          "atMs": 2732.27,
+          "sinceDispatchMs": 1708.09,
+          "runState": "complete",
+          "phase": "done",
+          "progress": 100,
+          "activeRunId": null,
+          "lastCompletedRunId": "_SrN0e7D1aGvj8BV-JiRS"
+        },
+        {
+          "connection": "reconnect",
+          "at": "2026-10-09T21:02:52.941Z",
+          "atMs": 4028.9,
+          "sinceDispatchMs": 3004.72,
+          "runState": "complete",
+          "phase": "done",
+          "progress": 100,
+          "activeRunId": null,
+          "lastCompletedRunId": "_SrN0e7D1aGvj8BV-JiRS"
+        },
+        {
+          "connection": "reconnect",
+          "at": "2026-10-09T21:02:54.396Z",
+          "atMs": 5484.12,
+          "sinceDispatchMs": 4459.97,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        },
+        {
+          "connection": "after-clear",
+          "at": "2026-10-09T21:02:54.813Z",
+          "atMs": 5901.02,
+          "sinceDispatchMs": 4876.85,
+          "runState": "idle",
+          "phase": "idle",
+          "progress": 0,
+          "activeRunId": null,
+          "lastCompletedRunId": null
+        }
+      ],
+      "transportMessages": [
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:49.552Z",
+          "type": "cf_agent_identity",
+          "id": null,
+          "done": null,
+          "error": null,
+          "bodyPreview": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:49.553Z",
+          "type": "cf_agent_mcp_servers",
+          "id": null,
+          "done": null,
+          "error": null,
+          "bodyPreview": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:49.586Z",
+          "type": "rpc",
+          "id": "8babf00b-34b2-4266-a554-e1023bf92729",
+          "done": true,
+          "error": null,
+          "bodyPreview": null
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:50.917Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"start\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.238Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"start-step\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.238Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-start\",\"id\":\"ROyP2RhglpyF3nlH\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.239Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\"Audit\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.239Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\"Audit\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.270Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" initiated\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.270Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" initiated\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.302Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" for http://\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.303Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" for http://\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.349Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\". The\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.349Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\". The\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.367Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" progress panel will\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.368Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" progress panel will\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.481Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" update in real\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.481Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" update in real\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.524Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\"-time as the\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.525Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\"-time as the\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.642Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" scan progresses.\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.643Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" scan progresses.\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.644Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" Once the\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.644Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" Once the\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.644Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" audit\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.645Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" audit\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.646Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" is complete,\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.647Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" is complete,\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.680Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" you\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.680Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" you\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.711Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" can\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.712Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" can\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.757Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" inquire\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.757Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" inquire\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.773Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" about the results\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.773Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" about the results\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.807Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" and ask follow\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.807Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\" and ask follow\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.837Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\"-up questions.\"}"
+        },
+        {
+          "connection": "initial",
+          "at": "2026-10-09T21:02:51.837Z",
+          "type": "cf_agent_use_chat_response",
+          "id": "1debab28-28d1-4711-b52f-7af306d027b3",
+          "done": false,
+          "error": null,
+          "bodyPreview": "{\"type\":\"text-delta\",\"id\":\"ROyP2RhglpyF3nlH\",\"delta\":\"-up questions.\"}"
+        }
+      ],
+      "result": {
+        "runId": "_SrN0e7D1aGvj8BV-JiRS",
+        "url": "http://",
+        "normalizedUrl": null,
+        "status": "invalid_url",
+        "summary": "The submitted URL could not be audited because it was invalid.",
+        "recommendations": [
+          "Submit a full public URL or bare domain that resolves over HTTP or HTTPS."
+        ],
+        "findings": [
+          {
+            "id": "invalid-url",
+            "severity": "high",
+            "title": "Invalid URL input",
+            "details": "The URL could not be parsed.",
+            "recommendation": "Use a public http or https URL. If the user pasted a bare hostname, try the https version first."
+          }
+        ],
+        "metadata": {
+          "finalUrl": null,
+          "statusCode": null,
+          "contentType": null,
+          "title": null,
+          "metaDescription": null,
+          "redirected": false,
+          "responseTimeMs": null
+        },
+        "startedAt": "2026-10-09T21:02:50.055Z",
+        "completedAt": "2026-10-09T21:02:51.526Z"
+      },
+      "cleanup": {
+        "requested": true,
+        "verified": true
+      },
+      "dispatchedAt": "2026-10-09T21:02:49.936Z",
+      "followUpPreview": "ToTo proceed proceed,, fix fix the invalid the invalid URL input by URL input by submitting a full submitting a full public URL or public URL or bare domain that bare domain that resolves over HTTP resolves over HTTP or HTTPS. or HTTPS. The The current URL \" current URL \"http://\" ishttp://\" is not valid not valid and cannot and cannot be aud be audited. Updateited. Update the URL to the URL to a valid one a valid one, such as, such as a a public http or public http or https URL, https URL, to to allow allow for for a a successful audit. successful audit."
+    }
+  ],
+  "summary": {
+    "attempted": 1,
+    "validationPassed": 1,
+    "validationFailed": 0,
+    "observedValidationPassRate": 1,
+    "workflowCompleted": 1,
+    "auditStatusCounts": {
+      "invalid_url": 1
+    },
+    "percentiles": "Nearest rank: sort samples; x[ceil(p*n)-1]. At n=3, p95 is the maximum, not a stable tail-latency estimate.",
+    "latencyPopulation": "All completed audits, including audits whose later follow-up/reconnect/cleanup validation failed. Uncompleted/timeouts remain in samples and failure counts; no latency is fabricated for them.",
+    "auditCompleteMs": {
+      "n": 1,
+      "min": 1708.09,
+      "median": 1708.09,
+      "p95": 1708.09,
+      "max": 1708.09
+    },
+    "firstRunningStateMs": {
+      "n": 1,
+      "min": 980.73,
+      "median": 980.73,
+      "p95": 980.73,
+      "max": 980.73
+    },
+    "serverAuditWallMs": {
+      "n": 1,
+      "min": 1471,
+      "median": 1471,
+      "p95": 1471,
+      "max": 1471
+    },
+    "originResponseMs": {
+      "n": 0,
+      "min": null,
+      "median": null,
+      "p95": null,
+      "max": null
+    },
+    "reconnectRecoveryMs": {
+      "n": 1,
+      "min": 761.17,
+      "median": 761.17,
+      "p95": 761.17,
+      "max": 761.17
+    }
+  }
+}

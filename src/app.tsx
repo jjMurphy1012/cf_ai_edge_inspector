@@ -225,7 +225,15 @@ function Chat() {
   const roomParam = globalThis.location
     ? new URLSearchParams(globalThis.location.search).get("room")
     : null;
-  const roomName = roomParam?.trim() ? roomParam.trim() : undefined;
+  const [roomName] = useState(() => {
+    if (roomParam?.trim()) return roomParam.trim();
+    const key = "edge-inspector-room";
+    const existing = localStorage.getItem(key);
+    if (existing) return existing;
+    const room = `audit-${crypto.randomUUID()}`;
+    localStorage.setItem(key, room);
+    return room;
+  });
   const [connected, setConnected] = useState(false);
   const [input, setInput] = useState("");
   const [showDebug, setShowDebug] = useState(false);
@@ -265,6 +273,13 @@ function Chat() {
       (message: MessageEvent) => {
         try {
           const data = JSON.parse(String(message.data));
+          if (data.type === "audit-session-error") {
+            toasts.add({
+              title: "Session change rejected",
+              description: data.message,
+              variant: "error"
+            });
+          }
           if (data.type === "scheduled-task") {
             toasts.add({
               title: "Scheduled task completed",
@@ -323,10 +338,10 @@ function Chat() {
   const {
     messages,
     sendMessage,
-    clearHistory,
     addToolApprovalResponse,
     stop,
-    status
+    status,
+    error: chatError
   } = useAgentChat({
     agent,
     onToolCall: async (event) => {
@@ -362,14 +377,14 @@ function Chat() {
       }
     }
 
-    if (agent.identified) {
+    if (agent.identified && connected) {
       void loadLatestAudit();
     }
 
     return () => {
       cancelled = true;
     };
-  }, [agent, agent.identified, auditState?.lastCompletedRunId]);
+  }, [agent, agent.identified, connected, auditState?.lastCompletedRunId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -439,7 +454,13 @@ function Chat() {
 
   const send = useCallback(async () => {
     const text = input.trim();
-    if ((!text && attachments.length === 0) || isStreaming) return;
+    if (
+      (!text && attachments.length === 0) ||
+      isStreaming ||
+      isClearing ||
+      !connected
+    )
+      return;
     setInput("");
 
     const parts: Array<
@@ -458,7 +479,7 @@ function Chat() {
 
     sendMessage({ role: "user", parts });
     if (textareaRef.current) textareaRef.current.style.height = "auto";
-  }, [input, attachments, isStreaming, sendMessage]);
+  }, [input, attachments, isStreaming, isClearing, connected, sendMessage]);
 
   const handleClear = useCallback(async () => {
     if (
@@ -473,7 +494,6 @@ function Chat() {
     setIsClearing(true);
     try {
       await agent.stub.clearAuditSession();
-      clearHistory();
       setLatestAudit(null);
       toasts.add({
         title: "Session cleared",
@@ -492,14 +512,7 @@ function Chat() {
     } finally {
       setIsClearing(false);
     }
-  }, [
-    agent,
-    auditState?.runState,
-    clearHistory,
-    isClearing,
-    isStreaming,
-    toasts
-  ]);
+  }, [agent, auditState?.runState, isClearing, isStreaming, toasts]);
 
   return (
     <div
@@ -519,8 +532,8 @@ function Chat() {
 
       {/* Header */}
       <header className="px-5 py-4 bg-kumo-base border-b border-kumo-line">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="max-w-3xl mx-auto flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-lg font-semibold text-kumo-default">
               <span className="mr-2">🔎</span>cf_ai_edge_inspector
             </h1>
@@ -529,7 +542,7 @@ function Chat() {
               Website Audit
             </Badge>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-1.5">
               <CircleIcon
                 size={8}
@@ -733,7 +746,7 @@ function Chat() {
       </header>
 
       {auditState && (
-        <div className="px-5 py-3 bg-kumo-base border-b border-kumo-line">
+        <div className="px-5 py-3 bg-kumo-base border-b border-kumo-line max-h-[50vh] overflow-y-auto shrink-0">
           <div className="max-w-3xl mx-auto space-y-3">
             <Surface className="rounded-xl ring ring-kumo-line px-4 py-3">
               <div className="flex items-start justify-between gap-4">
@@ -843,14 +856,30 @@ function Chat() {
                   </Surface>
                   <Surface className="rounded-lg border border-kumo-line px-3 py-2">
                     <Text size="xs" variant="secondary" bold>
-                      Response time
+                      Fetch + HTML read (Worker)
                     </Text>
                     <Text size="sm">
-                      {latestAudit.metadata.responseTimeMs
+                      {latestAudit.metadata.responseTimeMs != null
                         ? `${latestAudit.metadata.responseTimeMs} ms`
                         : "n/a"}
                     </Text>
                   </Surface>
+                </div>
+
+                <div className="text-xs text-kumo-subtle">
+                  Summary source:{" "}
+                  {latestAudit.metadata.summarySource === "ai"
+                    ? "Workers AI"
+                    : latestAudit.metadata.summarySource === "rules"
+                      ? "Deterministic rules (AI not used)"
+                      : "Not recorded for this older audit"}
+                  .
+                  {latestAudit.metadata.htmlBytes != null &&
+                    ` Read ${latestAudit.metadata.htmlBytes} HTML bytes.`}
+                  {latestAudit.metadata.htmlTruncated &&
+                    " Body limit reached; metadata checks used only the fetched prefix."}{" "}
+                  Timing measures this single Worker fetch and HTML read, not
+                  browser load time or an average.
                 </div>
 
                 <div className="space-y-2">
@@ -920,7 +949,7 @@ function Chat() {
                       key={prompt}
                       variant="outline"
                       size="sm"
-                      disabled={isStreaming}
+                      disabled={!connected || isStreaming || isClearing}
                       onClick={() => {
                         sendMessage({
                           role: "user",
@@ -1066,6 +1095,15 @@ function Chat() {
 
       {/* Input */}
       <div className="border-t border-kumo-line bg-kumo-base">
+        {chatError && (
+          <div
+            role="alert"
+            className="max-w-3xl mx-auto px-5 pt-3 text-sm text-red-500"
+          >
+            Chat failed: {chatError.message}. Your saved audit is still
+            available; try sending again.
+          </div>
+        )}
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -1118,7 +1156,7 @@ function Chat() {
               aria-label="Attach images"
               icon={<PaperclipIcon size={18} />}
               onClick={() => fileInputRef.current?.click()}
-              disabled={!connected || isStreaming}
+              disabled={!connected || isStreaming || isClearing}
               className="mb-0.5"
             />
             <InputArea
@@ -1142,7 +1180,7 @@ function Chat() {
                   ? "Add a message or send images..."
                   : "Send a message..."
               }
-              disabled={!connected || isStreaming}
+              disabled={!connected || isStreaming || isClearing}
               rows={1}
               className="flex-1 ring-0! focus:ring-0! shadow-none! bg-transparent! outline-none! resize-none max-h-40"
             />
@@ -1163,7 +1201,9 @@ function Chat() {
                 shape="square"
                 aria-label="Send message"
                 disabled={
-                  (!input.trim() && attachments.length === 0) || !connected
+                  (!input.trim() && attachments.length === 0) ||
+                  !connected ||
+                  isClearing
                 }
                 icon={<PaperPlaneRightIcon size={18} />}
                 className="mb-0.5"

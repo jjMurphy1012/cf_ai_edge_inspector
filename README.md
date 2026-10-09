@@ -7,6 +7,10 @@
 
 It runs on `Workers`, coordinates audits with `Workflows`, stores progress and history in `Durable Objects`, and supports follow-up questions against saved audit results.
 
+## Reproducible interview evidence
+
+See [the Chinese implementation and interview guide](docs/INTERVIEW_ZH.md) and [raw measurements with their scope](evidence/README.md). The current branch adds deterministic rule tests, local rules mode, guarded session lifecycle, and a benchmark that retains failures. The local rule-based run is not evidence of a newly deployed Workers AI version.
+
 ## Project Snapshot
 
 Core capabilities:
@@ -20,7 +24,7 @@ Core capabilities:
 
 Project details:
 
-- Live deployment is available on Cloudflare Workers
+- A previously deployed demo is hosted on Cloudflare Workers; see the dated validation limits below
 - `README.md` includes local run instructions and deployed links
 - `PROMPTS.md` records development-time AI prompts
 
@@ -116,7 +120,7 @@ This is not a vulnerability scanner or crawler. It inspects a single public URL 
 
 Prerequisites:
 
-- Node.js
+- Node.js 22.19+ (CI uses 22.19.0)
 - npm
 - Cloudflare account
 - Wrangler authenticated with Cloudflare
@@ -124,15 +128,16 @@ Prerequisites:
 Commands:
 
 ```bash
-npm install
+npm ci
+npm run dev:demo
+# Or, for real Workers AI:
 npx wrangler login
-npm run types
 npm run dev
 ```
 
 Notes:
 
-- `Workers AI` uses a remote binding, so local development requires `wrangler login`.
+- `npm run dev:demo` runs real local Workers/Workflows/SQLite/WebSockets with rule-based summaries, without Cloudflare credentials. Target URLs are still fetched over the network. `npm run dev` uses a remote Workers AI binding and requires `wrangler login`.
 - If `wrangler.jsonc` changes, rerun `npm run types`.
 
 ## Deploy
@@ -159,6 +164,8 @@ Static checks:
 
 ```bash
 npm run check
+npm test
+npm run build
 ```
 
 Live end-to-end validation against the deployed Worker:
@@ -181,5 +188,20 @@ Validated flows:
 - The audit only checks the homepage response. No recursive crawl, screenshotting, browser rendering, or vulnerability scanning.
 - Fetches use a fixed timeout and may classify origin blocking or rate limiting as a valid finding.
 - One `Workers AI` model currently handles both summary generation and follow-up answers.
-- The UI still contains some starter-era panels that are not essential to the core audit workflow.
+- Header checks detect presence (with CSP frame-ancestors handling), not complete policy correctness. HTTPS input alone cannot prove HTTP-to-HTTPS enforcement.
+- The fetch deadline is 8 seconds including redirects and bounded body reading. HTML is capped at 1 MiB; summaries have a separate 20-second deadline. Neither is an end-to-end SLA.
+- Room IDs are not authentication. The public demo lacks tenant authorization, rate limiting and DNS-rebinding defense. Do not store confidential URLs in shared rooms.
+- The UI retains optional starter MCP panels. Dependency audit findings remain; see evidence/README.md.
 - `Clear` is intentionally disabled while an audit is running, because clearing mid-workflow would create inconsistent state once the workflow completes.
+
+## Local end-to-end and benchmark commands
+
+Start `npm run dev:demo` and use the port printed by Vite. In another terminal:
+
+```bash
+node scripts/validate-live.mjs https://example.com --host 127.0.0.1:5173 --protocol ws --check-duplicate-start --output evidence/my-e2e.json
+node scripts/validate-guards.mjs --host 127.0.0.1:5173 --protocol ws --output evidence/my-guards.json
+node scripts/benchmark.mjs https://example.com --samples 3 --host 127.0.0.1:5173 --protocol ws --output evidence/my-benchmark.json
+```
+
+The harness creates isolated disposable rooms. It checks running-state guards, WebSocket progress, reconnect persistence, follow-up without a new scan, and empty state after Clear plus a third connection. It saves timestamps, raw samples, failure reasons and nearest-rank percentiles. It does not claim production availability, model accuracy or performance improvement.

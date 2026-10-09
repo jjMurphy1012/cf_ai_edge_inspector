@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-09T21:02:18.826Z",
+  "room": "validation-c8b64506-3a8b-4f14-9f11-8bfa21813741",
+  "reason": "Cleanup after initial protocol harness assertion expected the wrong SDK error text",
+  "ok": true,
+  "completedRunRecovered": "a9a364b3-7de9-4f3a-a86a-af8c4c07b986",
+  "auditAfterClear": null
+}
