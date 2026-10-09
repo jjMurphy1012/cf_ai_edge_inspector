@@ -1,0 +1,23 @@
+{
+  "note": "Read/cleanup only, no extra audits; original timed-out attempts remain failed in benchmark evidence.",
+  "checks": [
+    {
+      "at": "2026-10-09T21:04:23.719Z",
+      "room": "benchmark-d3f6a1b8-445e-4147-98a0-da31b3c08e03",
+      "originalError": "Workflow completion timed out after 120000ms",
+      "stateBefore": "idle",
+      "auditBefore": null,
+      "cleaned": true,
+      "transcriptCount": 0
+    },
+    {
+      "at": "2026-10-09T21:04:24.146Z",
+      "room": "benchmark-911fb122-8ade-4b24-98b0-ce0cd004cc91",
+      "originalError": "Workflow completion timed out after 120000ms",
+      "stateBefore": "idle",
+      "auditBefore": null,
+      "cleaned": true,
+      "transcriptCount": 0
+    }
+  ]
+}

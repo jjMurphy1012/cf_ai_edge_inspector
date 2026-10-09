@@ -1,0 +1,156 @@
+{
+  "startedAt": "2026-10-09T21:01:17.484Z",
+  "host": "127.0.0.1:5173",
+  "room": "validation-c8b64506-3a8b-4f14-9f11-8bfa21813741",
+  "deploymentLabel": "local-rules-working-tree",
+  "harnessSourceRevision": "f3e97c5bfda999c83c9e541d4749271af475da40",
+  "ok": false,
+  "checks": {
+    "rawChatClearRejectedWhileRunning": true
+  },
+  "events": [
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:17.527Z",
+      "state": {
+        "runState": "idle",
+        "phase": "idle",
+        "progress": 0,
+        "currentUrl": null,
+        "activeRunId": null,
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:17.527Z",
+      "state": {
+        "runState": "idle",
+        "phase": "idle",
+        "progress": 0,
+        "currentUrl": null,
+        "activeRunId": null,
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:17.533Z",
+      "state": {
+        "runState": "running",
+        "phase": "validating",
+        "progress": 5,
+        "currentUrl": "https://example.com",
+        "activeRunId": "a9a364b3-7de9-4f3a-a86a-af8c4c07b986",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:17.533Z",
+      "state": {
+        "runState": "running",
+        "phase": "validating",
+        "progress": 5,
+        "currentUrl": "https://example.com",
+        "activeRunId": "a9a364b3-7de9-4f3a-a86a-af8c4c07b986",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:17.538Z",
+      "type": "audit-session-error",
+      "message": "Error: Cannot clear the session while an audit is running."
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:17.547Z",
+      "state": {
+        "runState": "running",
+        "phase": "validating",
+        "progress": 5,
+        "currentUrl": "https://example.com",
+        "activeRunId": "a9a364b3-7de9-4f3a-a86a-af8c4c07b986",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:17.547Z",
+      "state": {
+        "runState": "running",
+        "phase": "validating",
+        "progress": 5,
+        "currentUrl": "https://example.com",
+        "activeRunId": "a9a364b3-7de9-4f3a-a86a-af8c4c07b986",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:17.547Z",
+      "type": "cf_agent_state_error",
+      "error": "State update rejected"
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:17.552Z",
+      "state": {
+        "runState": "running",
+        "phase": "fetching",
+        "progress": 25,
+        "currentUrl": "https://example.com/",
+        "activeRunId": "a9a364b3-7de9-4f3a-a86a-af8c4c07b986",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:17.552Z",
+      "state": {
+        "runState": "running",
+        "phase": "fetching",
+        "progress": 25,
+        "currentUrl": "https://example.com/",
+        "activeRunId": "a9a364b3-7de9-4f3a-a86a-af8c4c07b986",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    }
+  ],
+  "error": "Forged state change did not report server ownership",
+  "cleanupError": "Error: Cannot clear the session while an audit is running.",
+  "completedAt": "2026-10-09T21:01:17.554Z"
+}

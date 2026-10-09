@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "startedAt": "2026-10-09T20:59:54.108Z",
+  "completedAt": "2026-10-09T20:59:54.341Z",
+  "host": "127.0.0.1:5173",
+  "protocol": "ws",
+  "room": "validation-420ebcba-bafa-44d0-be3c-2abede15e479",
+  "auditUrl": "http://",
+  "deploymentLabel": "local-rules-working-tree",
+  "harnessSourceRevision": "f3e97c5bfda999c83c9e541d4749271af475da40",
+  "runtime": {
+    "node": "v23.11.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "measurement": "Client monotonic elapsed milliseconds; live WebSocket event receipt, not server CPU time or SLA.",
+  "progressStatusPollRequests": 0,
+  "metrics": {
+    "connectionReadyMs": 63.94,
+    "firstRunningStateMs": 6.16,
+    "initialChatFirstBodyMs": 9.98,
+    "initialChatDoneMs": 10.39,
+    "auditCompleteMs": 21.29,
+    "serverAuditWallMs": 10,
+    "originResponseMs": null,
+    "reconnectRecoveryMs": 65.85,
+    "followUpFirstBodyMs": 3.33,
+    "followUpDoneMs": 4.65,
+    "clearAndVerifyMs": 30.53,
+    "validationTotalMs": 232.67
+  },
+  "checks": {
+    "expectedAuditStatus": true,
+    "workflowCompleted": true,
+    "websocketProgress": true,
+    "clearRejectedWhileRunning": "skipped",
+    "chatTranscriptPersisted": true,
+    "freshConnectionRecoversAuditAndChat": true,
+    "followUpTextAndSameRun": true,
+    "clearPersistsAcrossNewConnection": true
+  },
+  "connections": [
+    {
+      "label": "initial",
+      "opened": true,
+      "errors": 0,
+      "closed": true,
+      "closeCode": 1000
+    },
+    {
+      "label": "reconnect",
+      "opened": true,
+      "errors": 0,
+      "closed": true,
+      "closeCode": 1000
+    },
+    {
+      "label": "after-clear",
+      "opened": true,
+      "errors": 0,
+      "closed": true,
+      "closeCode": 1000
+    }
+  ],
+  "stateTransitions": [
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:59:54.172Z",
+      "atMs": 63.77,
+      "sinceDispatchMs": null,
+      "runState": "idle",
+      "phase": "idle",
+      "progress": 0,
+      "activeRunId": null,
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:59:54.197Z",
+      "atMs": 88.53,
+      "sinceDispatchMs": 6.15,
+      "runState": "running",
+      "phase": "validating",
+      "progress": 5,
+      "activeRunId": "6cff4eb9-e963-4991-96bc-1e150b46c890",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:59:54.204Z",
+      "atMs": 95.39,
+      "sinceDispatchMs": 13.02,
+      "runState": "running",
+      "phase": "validating",
+      "progress": 5,
+      "activeRunId": "6cff4eb9-e963-4991-96bc-1e150b46c890",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:59:54.207Z",
+      "atMs": 98.87,
+      "sinceDispatchMs": 16.5,
+      "runState": "running",
+      "phase": "done",
+      "progress": 100,
+      "activeRunId": "6cff4eb9-e963-4991-96bc-1e150b46c890",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:59:54.212Z",
+      "atMs": 103.67,
+      "sinceDispatchMs": 21.29,
+      "runState": "complete",
+      "phase": "done",
+      "progress": 100,
+      "activeRunId": null,
+      "lastCompletedRunId": "6cff4eb9-e963-4991-96bc-1e150b46c890"
+    },
+    {
+      "connection": "reconnect",
+      "at": "2026-10-09T20:59:54.226Z",
+      "atMs": 117.48,
+      "sinceDispatchMs": 35.11,
+      "runState": "complete",
+      "phase": "done",
+      "progress": 100,
+      "activeRunId": null,
+      "lastCompletedRunId": "6cff4eb9-e963-4991-96bc-1e150b46c890"
+    },
+    {
+      "connection": "reconnect",
+      "at": "2026-10-09T20:59:54.313Z",
+      "atMs": 204.93,
+      "sinceDispatchMs": 122.56,
+      "runState": "idle",
+      "phase": "idle",
+      "progress": 0,
+      "activeRunId": null,
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "after-clear",
+      "at": "2026-10-09T20:59:54.333Z",
+      "atMs": 224.57,
+      "sinceDispatchMs": 142.29,
+      "runState": "idle",
+      "phase": "idle",
+      "progress": 0,
+      "activeRunId": null,
+      "lastCompletedRunId": null
+    }
+  ],
+  "result": {
+    "runId": "6cff4eb9-e963-4991-96bc-1e150b46c890",
+    "url": "http://",
+    "normalizedUrl": null,
+    "status": "invalid_url",
+    "summary": "The submitted URL could not be audited because it was invalid.",
+    "recommendations": [
+      "Submit a full public URL or bare domain that resolves over HTTP or HTTPS."
+    ],
+    "findings": [
+      {
+        "id": "invalid-url",
+        "severity": "high",
+        "title": "Invalid URL input",
+        "details": "The URL could not be parsed.",
+        "recommendation": "Use a public http or https URL. If the user pasted a bare hostname, try the https version first."
+      }
+    ],
+    "metadata": {
+      "finalUrl": null,
+      "statusCode": null,
+      "contentType": null,
+      "title": null,
+      "metaDescription": null,
+      "redirected": false,
+      "responseTimeMs": null,
+      "summarySource": "rules",
+      "summaryFallbackReason": "rules-only"
+    },
+    "startedAt": "2026-10-09T20:59:54.195Z",
+    "completedAt": "2026-10-09T20:59:54.205Z"
+  },
+  "cleanup": {
+    "requested": true,
+    "verified": true
+  },
+  "dispatchedAt": "2026-10-09T20:59:54.191Z",
+  "followUpPreview": "Based on the saved audit of http://: The submitted URL could not be audited because it was invalid. First recommended action: Submit a full public URL or bare domain that resolves over HTTP or HTTPS. This answer uses the saved rule results and does not run a new scan."
+}

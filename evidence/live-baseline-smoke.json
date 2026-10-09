@@ -1,0 +1,269 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "startedAt": "2026-10-09T20:58:33.965Z",
+  "completedAt": "2026-10-09T20:58:46.471Z",
+  "host": "cf-ai-edge-inspector.zheng-jiaju.workers.dev",
+  "protocol": "wss",
+  "room": "validation-9f27bab8-8895-472c-8d69-2b68f17db78e",
+  "auditUrl": "https://example.com",
+  "deploymentLabel": "baseline-existing-live-revision-not-verified",
+  "harnessSourceRevision": "f3e97c5bfda999c83c9e541d4749271af475da40",
+  "runtime": {
+    "node": "v23.11.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "measurement": "Client monotonic elapsed milliseconds; live WebSocket event receipt, not server CPU time or SLA.",
+  "progressStatusPollRequests": 0,
+  "metrics": {
+    "connectionReadyMs": 1159.34,
+    "firstRunningStateMs": 1180.35,
+    "initialChatFirstBodyMs": 1180.57,
+    "initialChatDoneMs": 3151.11,
+    "auditCompleteMs": 7915.64,
+    "serverAuditWallMs": 7744,
+    "originResponseMs": 9,
+    "reconnectRecoveryMs": 419.58,
+    "followUpFirstBodyMs": 97.1,
+    "followUpDoneMs": 1215.07,
+    "clearAndVerifyMs": 601.4,
+    "validationTotalMs": 12505.49
+  },
+  "checks": {
+    "workflowCompleted": true,
+    "websocketProgress": true,
+    "clearRejectedWhileRunning": true,
+    "chatTranscriptPersisted": true,
+    "freshConnectionRecoversAuditAndChat": true,
+    "followUpTextAndSameRun": true,
+    "clearPersistsAcrossNewConnection": true
+  },
+  "connections": [
+    {
+      "label": "initial",
+      "opened": true,
+      "errors": 0,
+      "closed": false
+    },
+    {
+      "label": "reconnect",
+      "opened": true,
+      "errors": 0,
+      "closed": false
+    },
+    {
+      "label": "after-clear",
+      "opened": true,
+      "errors": 0,
+      "closed": false
+    }
+  ],
+  "stateTransitions": [
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:58:35.125Z",
+      "atMs": 1159.17,
+      "sinceDispatchMs": null,
+      "runState": "idle",
+      "phase": "idle",
+      "progress": 0,
+      "activeRunId": null,
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:58:36.951Z",
+      "atMs": 2985.2,
+      "sinceDispatchMs": 1180.35,
+      "runState": "running",
+      "phase": "validating",
+      "progress": 5,
+      "activeRunId": "r4Hclso2dgsBN-Uj2muHB",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:58:39.429Z",
+      "atMs": 5463.65,
+      "sinceDispatchMs": 3658.83,
+      "runState": "running",
+      "phase": "validating",
+      "progress": 5,
+      "activeRunId": "r4Hclso2dgsBN-Uj2muHB",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:58:39.521Z",
+      "atMs": 5555.79,
+      "sinceDispatchMs": 3750.94,
+      "runState": "running",
+      "phase": "fetching",
+      "progress": 25,
+      "activeRunId": "r4Hclso2dgsBN-Uj2muHB",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:58:39.625Z",
+      "atMs": 5659.81,
+      "sinceDispatchMs": 3854.96,
+      "runState": "running",
+      "phase": "inspecting",
+      "progress": 55,
+      "activeRunId": "r4Hclso2dgsBN-Uj2muHB",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:58:39.760Z",
+      "atMs": 5794.63,
+      "sinceDispatchMs": 3989.78,
+      "runState": "running",
+      "phase": "summarizing",
+      "progress": 80,
+      "activeRunId": "r4Hclso2dgsBN-Uj2muHB",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:58:43.631Z",
+      "atMs": 9665.72,
+      "sinceDispatchMs": 7860.92,
+      "runState": "running",
+      "phase": "persisting",
+      "progress": 95,
+      "activeRunId": "r4Hclso2dgsBN-Uj2muHB",
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "initial",
+      "at": "2026-10-09T20:58:43.686Z",
+      "atMs": 9720.41,
+      "sinceDispatchMs": 7915.63,
+      "runState": "complete",
+      "phase": "done",
+      "progress": 100,
+      "activeRunId": null,
+      "lastCompletedRunId": "r4Hclso2dgsBN-Uj2muHB"
+    },
+    {
+      "connection": "reconnect",
+      "at": "2026-10-09T20:58:44.501Z",
+      "atMs": 10535.43,
+      "sinceDispatchMs": 8730.6,
+      "runState": "complete",
+      "phase": "done",
+      "progress": 100,
+      "activeRunId": null,
+      "lastCompletedRunId": "r4Hclso2dgsBN-Uj2muHB"
+    },
+    {
+      "connection": "reconnect",
+      "at": "2026-10-09T20:58:45.908Z",
+      "atMs": 11942.38,
+      "sinceDispatchMs": 10137.56,
+      "runState": "idle",
+      "phase": "idle",
+      "progress": 0,
+      "activeRunId": null,
+      "lastCompletedRunId": null
+    },
+    {
+      "connection": "after-clear",
+      "at": "2026-10-09T20:58:46.388Z",
+      "atMs": 12422.37,
+      "sinceDispatchMs": 10617.54,
+      "runState": "idle",
+      "phase": "idle",
+      "progress": 0,
+      "activeRunId": null,
+      "lastCompletedRunId": null
+    }
+  ],
+  "result": {
+    "runId": "r4Hclso2dgsBN-Uj2muHB",
+    "url": "https://example.com",
+    "normalizedUrl": "https://example.com/",
+    "status": "partial",
+    "summary": "The website audit of https://example.com found 7 issues, including 2 medium-severity security concerns and 1 medium-severity performance issue. The site is missing several security headers, including HSTS, CSP, and X-Frame-Options, which can make it vulnerable to script injection and other attacks. Additionally, the 缺乏",
+    "recommendations": [
+      "Add Strict-Transport-Security header",
+      "Define Content-Security-Policy",
+      "Add X-Frame-Options header or frame-ancestors CSP directive"
+    ],
+    "findings": [
+      {
+        "id": "missing-hsts",
+        "severity": "medium",
+        "title": "Missing Strict-Transport-Security header",
+        "details": "Without HSTS, browsers may continue to use insecure transport for future visits.",
+        "recommendation": "Add a Strict-Transport-Security header after validating that HTTPS is correctly enforced."
+      },
+      {
+        "id": "missing-csp",
+        "severity": "medium",
+        "title": "Missing Content-Security-Policy header",
+        "details": "A missing CSP reduces protection against script injection and unsafe third-party content.",
+        "recommendation": "Define a baseline Content-Security-Policy that limits script, frame, and object sources."
+      },
+      {
+        "id": "missing-x-frame-options",
+        "severity": "low",
+        "title": "Missing X-Frame-Options header",
+        "details": "This makes it easier for other sites to embed the page in an iframe.",
+        "recommendation": "Add X-Frame-Options or an equivalent frame-ancestors CSP directive."
+      },
+      {
+        "id": "missing-x-content-type-options",
+        "severity": "low",
+        "title": "Missing X-Content-Type-Options header",
+        "details": "Browsers may try to MIME-sniff content when this header is absent.",
+        "recommendation": "Return X-Content-Type-Options: nosniff for public responses."
+      },
+      {
+        "id": "missing-referrer-policy",
+        "severity": "low",
+        "title": "Missing Referrer-Policy header",
+        "details": "The browser may leak more referrer information than intended on cross-site navigation.",
+        "recommendation": "Set a Referrer-Policy such as strict-origin-when-cross-origin."
+      },
+      {
+        "id": "missing-cache-control",
+        "severity": "medium",
+        "title": "Missing Cache-Control header",
+        "details": "No cache directive was detected on the homepage response.",
+        "recommendation": "Add explicit Cache-Control directives so browsers and edge caches know how to treat the response."
+      },
+      {
+        "id": "missing-meta-description",
+        "severity": "info",
+        "title": "Missing meta description",
+        "details": "No meta description was found in the fetched homepage HTML.",
+        "recommendation": "Add a concise meta description to improve how the page is summarized externally."
+      }
+    ],
+    "metadata": {
+      "finalUrl": "https://example.com/",
+      "statusCode": 200,
+      "contentType": "text/html; charset=utf-8",
+      "title": "Example Domain",
+      "metaDescription": null,
+      "redirected": false,
+      "responseTimeMs": 9
+    },
+    "startedAt": "2026-10-09T20:58:35.884Z",
+    "completedAt": "2026-10-09T20:58:43.628Z"
+  },
+  "cleanup": {
+    "requested": true,
+    "verified": true
+  },
+  "dispatchedAt": "2026-10-09T20:58:35.770Z",
+  "runningClearGuard": {
+    "passed": true,
+    "error": "Cannot clear the session while an audit is running."
+  },
+  "followUpPreview": "ToTo prioritize fixes prioritize fixes, address, address the medium the medium-severity security-severity security concerns first. concerns first. Add Add a Strict- a Strict-Transport-SecurityTransport-Security header and header and define a Content define a Content-Security-P-Security-Policy to mitigateolicy to mitigate script script injection and other injection and other attack attack vulnerabilities. These vulnerabilities. These two two issues should issues should be fixed be fixed first first due due to their potential to their potential impact on site impact on site security. security."
+}

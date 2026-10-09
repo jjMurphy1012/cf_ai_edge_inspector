@@ -1,0 +1,343 @@
+{
+  "startedAt": "2026-10-09T21:01:40.624Z",
+  "host": "127.0.0.1:5173",
+  "room": "validation-a9042fd1-54bb-41d7-a6e9-4ad3d8bbd301",
+  "deploymentLabel": "local-rules-working-tree",
+  "harnessSourceRevision": "f3e97c5bfda999c83c9e541d4749271af475da40",
+  "ok": true,
+  "checks": {
+    "rawChatClearRejectedWhileRunning": true,
+    "clientCannotOverwriteServerState": true,
+    "rejectedFramesDoNotCancelWorkflow": true,
+    "clearBroadcastReachesCallerAndOtherConnection": true
+  },
+  "events": [
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:40.731Z",
+      "state": {
+        "runState": "idle",
+        "phase": "idle",
+        "progress": 0,
+        "currentUrl": null,
+        "activeRunId": null,
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.732Z",
+      "state": {
+        "runState": "idle",
+        "phase": "idle",
+        "progress": 0,
+        "currentUrl": null,
+        "activeRunId": null,
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:40.739Z",
+      "state": {
+        "runState": "running",
+        "phase": "validating",
+        "progress": 5,
+        "currentUrl": "https://example.com",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.740Z",
+      "state": {
+        "runState": "running",
+        "phase": "validating",
+        "progress": 5,
+        "currentUrl": "https://example.com",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.746Z",
+      "type": "audit-session-error",
+      "message": "Error: Cannot clear the session while an audit is running."
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:40.750Z",
+      "state": {
+        "runState": "running",
+        "phase": "validating",
+        "progress": 5,
+        "currentUrl": "https://example.com",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.750Z",
+      "state": {
+        "runState": "running",
+        "phase": "validating",
+        "progress": 5,
+        "currentUrl": "https://example.com",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.750Z",
+      "type": "cf_agent_state_error",
+      "error": "State update rejected"
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:40.755Z",
+      "state": {
+        "runState": "running",
+        "phase": "fetching",
+        "progress": 25,
+        "currentUrl": "https://example.com/",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.755Z",
+      "state": {
+        "runState": "running",
+        "phase": "fetching",
+        "progress": 25,
+        "currentUrl": "https://example.com/",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:40.914Z",
+      "state": {
+        "runState": "running",
+        "phase": "inspecting",
+        "progress": 55,
+        "currentUrl": "https://example.com/",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.915Z",
+      "state": {
+        "runState": "running",
+        "phase": "inspecting",
+        "progress": 55,
+        "currentUrl": "https://example.com/",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:40.916Z",
+      "state": {
+        "runState": "running",
+        "phase": "summarizing",
+        "progress": 80,
+        "currentUrl": "https://example.com/",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.916Z",
+      "state": {
+        "runState": "running",
+        "phase": "summarizing",
+        "progress": 80,
+        "currentUrl": "https://example.com/",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:40.919Z",
+      "state": {
+        "runState": "running",
+        "phase": "persisting",
+        "progress": 95,
+        "currentUrl": "https://example.com/",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": "The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header.",
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.919Z",
+      "state": {
+        "runState": "running",
+        "phase": "persisting",
+        "progress": 95,
+        "currentUrl": "https://example.com/",
+        "activeRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": "The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header.",
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:40.920Z",
+      "state": {
+        "runState": "complete",
+        "phase": "done",
+        "progress": 100,
+        "currentUrl": "https://example.com/",
+        "activeRunId": null,
+        "lastCompletedRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastError": null,
+        "latestSummary": "The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header.",
+        "history": [
+          {
+            "runId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+            "url": "https://example.com",
+            "status": "partial",
+            "summary": "The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header.",
+            "completedAt": "2026-10-09T21:01:40.917Z"
+          }
+        ]
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.920Z",
+      "state": {
+        "runState": "complete",
+        "phase": "done",
+        "progress": 100,
+        "currentUrl": "https://example.com/",
+        "activeRunId": null,
+        "lastCompletedRunId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+        "lastError": null,
+        "latestSummary": "The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header.",
+        "history": [
+          {
+            "runId": "1ed261b7-3d64-4c0d-8bb4-d0ec5a265a55",
+            "url": "https://example.com",
+            "status": "partial",
+            "summary": "The homepage was reachable, but the audit found configuration issues on HTTP 200. Top findings: Missing Strict-Transport-Security header; Missing Content-Security-Policy header; Missing X-Frame-Options header.",
+            "completedAt": "2026-10-09T21:01:40.917Z"
+          }
+        ]
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:40.922Z",
+      "state": {
+        "runState": "idle",
+        "phase": "idle",
+        "progress": 0,
+        "currentUrl": null,
+        "activeRunId": null,
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "observer",
+      "at": "2026-10-09T21:01:40.922Z",
+      "type": "cf_agent_chat_clear"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.922Z",
+      "state": {
+        "runState": "idle",
+        "phase": "idle",
+        "progress": 0,
+        "currentUrl": null,
+        "activeRunId": null,
+        "lastCompletedRunId": null,
+        "lastError": null,
+        "latestSummary": null,
+        "history": []
+      },
+      "type": "cf_agent_state"
+    },
+    {
+      "label": "active",
+      "at": "2026-10-09T21:01:40.922Z",
+      "type": "cf_agent_chat_clear"
+    }
+  ],
+  "completedAt": "2026-10-09T21:01:40.923Z"
+}

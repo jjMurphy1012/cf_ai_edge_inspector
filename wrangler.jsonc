@@ -8,6 +8,9 @@
   "main": "src/server.ts",
   "compatibility_date": "2026-04-13",
   "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "AUDIT_SUMMARY_MODE": "ai"
+  },
   "ai": {
     "binding": "AI",
     "remote": true

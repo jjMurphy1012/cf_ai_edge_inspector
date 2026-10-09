@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-09T21:08:00.353Z",
+  "command": "npm audit --json",
+  "lockfileSha256": "d44753586674551dc202e4a11aad0f4991da0f356e8b155ad6051ab0d4c4ec79",
+  "counts": {
+    "info": 0,
+    "low": 8,
+    "moderate": 10,
+    "high": 16,
+    "critical": 3,
+    "total": 37
+  },
+  "scope": "All locked dependencies including development tooling; advisory count is not exploitability proof.",
+  "remediation": "Automatic non-force audit fix was blocked by Wrangler/Workers types peer-version conflict. No force/downgrade was applied. The existing lockfile is retained except an explicit ws development dependency for the validation harness; a coordinated dependency upgrade remains."
+}
